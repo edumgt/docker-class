@@ -1,4 +1,6 @@
-# 🐳 Docker Class Master
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+# <i class="fa-brands fa-docker"></i> Docker Class Master
 
 ## 선수 repo - https://github.com/edumgt/edumgt-lab-init
 
@@ -30,7 +32,7 @@
 
 ### 0-1. 개인별 습득해야 할 기술 스택
 
-#### 🟢 기초 (01~05장 필수)
+#### <i class="fa-solid fa-circle" style="color:#22c55e;"></i> 기초 (01~05장 필수)
 
 | 영역 | 필요 역량 | 참고 자료 |
 |---|---|---|
@@ -40,7 +42,7 @@
 | 네트워크 기초 | IP, 포트, DNS, TCP/UDP 개념 이해 | — |
 | Docker 기초 | 이미지/컨테이너/볼륨/네트워크 개념, Dockerfile 문법 | [Docker 공식 튜토리얼](https://docs.docker.com/get-started/) |
 
-#### 🟡 중급 (06~11장, Advanced 12~20장)
+#### <i class="fa-solid fa-circle" style="color:#eab308;"></i> 중급 (06~11장, Advanced 12~20장)
 
 | 영역 | 필요 역량 |
 |---|---|
@@ -54,7 +56,7 @@
 | 보안 기초 | 시크릿 관리(Vault), SSO(Keycloak), 이미지 취약점 스캔(Trivy) |
 | 모니터링 | Prometheus 메트릭 수집, Grafana 대시보드, Loki 로그 집계 |
 
-#### 🔴 심화 (21~28장, 선택)
+#### <i class="fa-solid fa-circle" style="color:#ef4444;"></i> 심화 (21~28장, 선택)
 
 | 영역 | 필요 역량 |
 |---|---|
@@ -103,12 +105,12 @@
 
 | 플랫폼 | 용도 | 무료 플랜 여부 | 가입 URL |
 |---|---|---|---|
-| **Docker Hub** | 이미지 Pull/Push, 공개 레지스트리 | ✅ 무료 (Pull 제한 있음) | [hub.docker.com](https://hub.docker.com) |
-| **GitHub** | 선수 repo(`edumgt-lab-init`) 및 소스 관리 | ✅ 무료 | [github.com](https://github.com) |
-| **GitLab.com** (선택) | 클라우드 GitLab 연습용 (로컬 CE와 병행 가능) | ✅ 무료 (Free tier) | [gitlab.com](https://gitlab.com) |
-| **SonarCloud** (선택) | 공개 저장소 코드 품질 분석 클라우드판 | ✅ 오픈소스 무료 | [sonarcloud.io](https://sonarcloud.io) |
-| **Hugging Face** (선택) | sLLM 모델 다운로드 (28장) | ✅ 무료 | [huggingface.co](https://huggingface.co) |
-| **AWS / GCP / Azure** (선택) | 클라우드 VM에서 온프레미스 실습 환경 구성 | ❌ 유료 (프리 티어 한정 무료) | 각 클라우드 콘솔 참고 |
+| **Docker Hub** | 이미지 Pull/Push, 공개 레지스트리 | <i class="fa-solid fa-circle-check"></i> 무료 (Pull 제한 있음) | [hub.docker.com](https://hub.docker.com) |
+| **GitHub** | 선수 repo(`edumgt-lab-init`) 및 소스 관리 | <i class="fa-solid fa-circle-check"></i> 무료 | [github.com](https://github.com) |
+| **GitLab.com** (선택) | 클라우드 GitLab 연습용 (로컬 CE와 병행 가능) | <i class="fa-solid fa-circle-check"></i> 무료 (Free tier) | [gitlab.com](https://gitlab.com) |
+| **SonarCloud** (선택) | 공개 저장소 코드 품질 분석 클라우드판 | <i class="fa-solid fa-circle-check"></i> 오픈소스 무료 | [sonarcloud.io](https://sonarcloud.io) |
+| **Hugging Face** (선택) | sLLM 모델 다운로드 (28장) | <i class="fa-solid fa-circle-check"></i> 무료 | [huggingface.co](https://huggingface.co) |
+| **AWS / GCP / Azure** (선택) | 클라우드 VM에서 온프레미스 실습 환경 구성 | <i class="fa-solid fa-circle-xmark"></i> 유료 (프리 티어 한정 무료) | 각 클라우드 콘솔 참고 |
 
 > [!NOTE]
 > **로컬 PC에서만 실습**하는 경우 Docker Hub와 GitHub 계정만으로도 01~28장 전 과정을 진행할 수 있습니다.
@@ -641,6 +643,6 @@ docker compose -f docker-compose.stack.yml up -d
 
 ---
 
-## 📺 관련 YouTube 영상
+## <i class="fa-solid fa-tv"></i> 관련 YouTube 영상
 
-[🎬 YouTube에서 관련 영상 검색하기](https://www.youtube.com/results?search_query=Docker+DevSecOps+강의)
+[<i class="fa-solid fa-clapperboard"></i> YouTube에서 관련 영상 검색하기](https://www.youtube.com/results?search_query=Docker+DevSecOps+강의)
