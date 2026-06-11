@@ -5,25 +5,79 @@
 ## 선수 repo - https://github.com/edumgt/edumgt-lab-init
 
 ## 목차
-- [0. 시작 전 준비사항](#0-시작-전-준비사항)
-- [1. 학습 로드맵](#1-학습-로드맵)
-- [2. Docker Desktop 빠른 제어](#2-docker-desktop-빠른-제어)
-- [3. 아키텍처 개요](#3-아키텍처-개요)
-- [4. 온프렘 최소 자원 산정](#4-온프렘-최소-자원-산정)
-- [5. 운영 고도화 확장 스택](#5-운영-고도화-확장-스택)
-- [6. 통합 의존관계 다이어그램](#6-통합-의존관계-다이어그램)
-- [7. WSL 포트 80 트러블슈팅](#7-wsl-포트-80-트러블슈팅)
-- [8. Docker 이미지 목록](#8-docker-이미지-목록)
-- [9. 대상 독자와 도입 로드맵](#9-대상-독자와-도입-로드맵)
-- [10. 확장 커리큘럼 맵 (12~26)](#10-확장-커리큘럼-맵-1226)
-- [11. 공용 리소스 폴더](#11-공용-리소스-폴더)
-- [12. Python + 금융공학 RAG Lab](#12-python--금융공학-rag-lab)
+- [0. 폴더 구조](#0-폴더-구조)
+- [1. 시작 전 준비사항](#1-시작-전-준비사항)
+- [2. 학습 로드맵](#2-학습-로드맵)
+- [3. Docker Desktop 빠른 제어](#3-docker-desktop-빠른-제어)
+- [4. 아키텍처 개요](#4-아키텍처-개요)
+- [5. 온프렘 최소 자원 산정](#5-온프렘-최소-자원-산정)
+- [6. 운영 고도화 확장 스택](#6-운영-고도화-확장-스택)
+- [7. 통합 의존관계 다이어그램](#7-통합-의존관계-다이어그램)
+- [8. WSL 포트 80 트러블슈팅](#8-wsl-포트-80-트러블슈팅)
+- [9. Docker 이미지 목록](#9-docker-이미지-목록)
+- [10. 대상 독자와 도입 로드맵](#10-대상-독자와-도입-로드맵)
+- [11. 확장 커리큘럼 맵](#11-확장-커리큘럼-맵)
+- [12. 공용 리소스 폴더](#12-공용-리소스-폴더)
 - [13. Vector DB 원리와 Docker 실습](#13-vector-db-원리와-docker-실습)
 - [14. 멀티 모델 & sLLM Docker 서빙](#14-멀티-모델--sllm-docker-서빙)
 
 ---
 
-## 0. 시작 전 준비사항
+## 0. 폴더 구조
+
+```
+docker-class/
+├── docker-basics/                         # Docker 기초 (01~05장)
+│   ├── 01-Docker-Introduction/            # Docker 개념 소개
+│   ├── 02-Docker-Installation/            # 설치 가이드 (Windows/macOS/Linux)
+│   ├── 03-Pull-from-DockerHub-and-Run-Docker-Images/  # Hub에서 Pull & Run
+│   ├── 04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub/  # 이미지 빌드·Push
+│   └── 05-Essential-Docker-Commands/      # 핵심 CLI 명령어 모음
+│
+├── devsecops-on-prem/                     # DevSecOps On-Prem 도구 (06~11장)
+│   ├── 06-Jenkins-Server-On-Prem/         # Jenkins LTS 온프레미스 구축
+│   ├── 07-GitLab-CE-On-Prem/              # GitLab CE 온프레미스 구축
+│   ├── 08-SonarQube-On-Prem/              # SonarQube 코드 품질 분석
+│   ├── 09-Nexus-Repository-On-Prem/       # Nexus 아티팩트 저장소
+│   ├── 10-Drone-CI-On-Prem/               # Drone CI 경량 파이프라인
+│   └── 11-Integrated-DevSecOps-Lab/       # 전체 스택 통합 실습 (Traefik·Keycloak·Vault·Trivy·Prometheus·Grafana·Loki)
+│
+├── ai-tools/                              # AI / ML Docker 실습 (27~28장)
+│   ├── 27-Vector-DB-Docker-Playground/    # Qdrant·Chroma·Weaviate·pgvector 실습
+│   └── 28-Multi-Model-sLLM-Serving/       # Ollama CPU/GPU 서빙 + Open WebUI
+│
+├── _shared-advanced-core/                 # Advanced 과정 공용 리소스 (12~20장 내용 포함)
+│   ├── labs/
+│   │   ├── day01/  → Docker 개요 & 첫 걸음
+│   │   ├── day02/  → 컨테이너 심화 (프로세스/자원/IO)
+│   │   ├── day03/  → Dockerfile & 이미지 빌드
+│   │   ├── day04/  → 이미지 최적화 (멀티스테이지)
+│   │   ├── day05/  → 네트워킹 (브리지/DNS/통신)
+│   │   ├── day06/  → 스토리지 & 백업/복구
+│   │   ├── day07/  → Compose 실전
+│   │   ├── day08/  → 디버깅 & 운영
+│   │   └── day09/  → Jenkins CI 파이프라인
+│   ├── capstone/                          # 캡스톤 프로젝트
+│   ├── docs/                              # 강의 문서
+│   └── templates/                         # 공용 템플릿
+│
+├── _shared-onprem-core/                   # OnPrem 솔루션 공용 리소스 (21~25장 내용 포함)
+│   ├── solutions/
+│   │   ├── odoo/     → Odoo ERP
+│   │   ├── erpnext/  → ERPNext
+│   │   ├── tryton/   → Tryton
+│   │   ├── taiga/    → Taiga (프로젝트 관리)
+│   │   └── zulip/    → Zulip (팀 메시지)
+│   ├── captures/                          # 실습 캡처 이미지
+│   ├── docker/                            # 공용 DB 초기화·인증 스크립트
+│   └── scripts/                           # 오케스트레이션 스크립트
+│
+└── labs/                                  # 수강생용 기초 실습 파일 (day01~09)
+```
+
+---
+
+## 1. 시작 전 준비사항
 
 > [!IMPORTANT]
 > 실습을 시작하기 전에 아래 항목을 모두 확인하세요. 기술 스택 이해도와 PC 사양에 따라 진행 가능한 단계가 달라집니다.
@@ -32,7 +86,7 @@
 
 ### 0-1. 개인별 습득해야 할 기술 스택
 
-#### <i class="fa-solid fa-circle" style="color:#22c55e;"></i> 기초 (01~05장 필수)
+#### <i class="fa-solid fa-circle" style="color:#22c55e;"></i> 기초 — `docker-basics/` (01~05장 필수)
 
 | 영역 | 필요 역량 | 참고 자료 |
 |---|---|---|
@@ -42,7 +96,7 @@
 | 네트워크 기초 | IP, 포트, DNS, TCP/UDP 개념 이해 | — |
 | Docker 기초 | 이미지/컨테이너/볼륨/네트워크 개념, Dockerfile 문법 | [Docker 공식 튜토리얼](https://docs.docker.com/get-started/) |
 
-#### <i class="fa-solid fa-circle" style="color:#eab308;"></i> 중급 (06~11장, Advanced 12~20장)
+#### <i class="fa-solid fa-circle" style="color:#eab308;"></i> 중급 — `devsecops-on-prem/` (06~11장) + `_shared-advanced-core/labs/` (Advanced day01~09)
 
 | 영역 | 필요 역량 |
 |---|---|
@@ -56,7 +110,7 @@
 | 보안 기초 | 시크릿 관리(Vault), SSO(Keycloak), 이미지 취약점 스캔(Trivy) |
 | 모니터링 | Prometheus 메트릭 수집, Grafana 대시보드, Loki 로그 집계 |
 
-#### <i class="fa-solid fa-circle" style="color:#ef4444;"></i> 심화 (21~28장, 선택)
+#### <i class="fa-solid fa-circle" style="color:#ef4444;"></i> 심화 — `_shared-onprem-core/solutions/` (21~25장) + `ai-tools/` (27~28장, 선택)
 
 | 영역 | 필요 역량 |
 |---|---|
@@ -80,8 +134,8 @@
 | **01~05장** (Docker 기초) | 4코어 | 8 GB | 50 GB | 16 GB | 100 GB | Docker Desktop 구동 기준 |
 | **06~10장** (핵심 On-Prem 스택) | 8코어 | 16 GB | 400 GB | 32 GB | 600 GB | GitLab 단독 최소 8 GB RAM |
 | **11장** (통합 DevSecOps Lab) | 8코어 | 32 GB | 300 GB | 64 GB | 500 GB | 전체 프로파일 동시 기동 기준 |
-| **12~20장** (Advanced) | 8코어 | 16 GB | 200 GB | 32 GB | 400 GB | Compose 멀티 컨테이너 구동 |
-| **21~25장** (OnPrem 솔루션) | 8코어 | 16 GB | 200 GB | 32 GB | 400 GB | Odoo/ERPNext DB 포함 |
+| **Advanced day01~09** (`_shared-advanced-core/labs/`) | 8코어 | 16 GB | 200 GB | 32 GB | 400 GB | Compose 멀티 컨테이너 구동 |
+| **OnPrem 솔루션** (`_shared-onprem-core/solutions/`) | 8코어 | 16 GB | 200 GB | 32 GB | 400 GB | Odoo/ERPNext DB 포함 |
 | **27장** (Vector DB) | 4코어 | 8 GB | 50 GB | 16 GB | 100 GB | 경량 Vector DB 실습 |
 | **28장** (sLLM 서빙, CPU) | 8코어 | 16 GB | 100 GB | 32 GB | 200 GB | gemma3:2b 기준 |
 | **28장** (sLLM 서빙, GPU) | 8코어 | 32 GB | 200 GB | 64 GB | 500 GB | NVIDIA GPU 8 GB VRAM 이상 |
@@ -163,42 +217,63 @@
 
 ---
 
-## 1. 학습 로드맵
+## 2. 학습 로드맵
+
+### Docker 기초 — `docker-basics/`
 
 | 단계 | 주제 | 이동 |
 |---|---|---|
-| 01 | Docker 소개 | [01-Docker-Introduction](./01-Docker-Introduction/README.md) |
-| 02 | Docker 설치 | [02-Docker-Installation](./02-Docker-Installation/README.md) |
-| 03 | Docker Hub 이미지 Pull/Run | [03-Pull-from-DockerHub-and-Run-Docker-Images](./03-Pull-from-DockerHub-and-Run-Docker-Images/README.md) |
-| 04 | 이미지 Build/Run/Push | [04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub](./04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub/README.md) |
-| 05 | 핵심 Docker 명령어 | [05-Essential-Docker-Commands](./05-Essential-Docker-Commands/README.md) |
-| 06 | Jenkins 온프레미스 구축 | [06-Jenkins-Server-On-Prem](./06-Jenkins-Server-On-Prem/README.md) |
-| 07 | GitLab CE 온프레미스 구축 | [07-GitLab-CE-On-Prem](./07-GitLab-CE-On-Prem/README.md) |
-| 08 | SonarQube 온프레미스 구축 | [08-SonarQube-On-Prem](./08-SonarQube-On-Prem/README.md) |
-| 09 | Nexus Repository 온프레미스 구축 | [09-Nexus-Repository-On-Prem](./09-Nexus-Repository-On-Prem/README.md) |
-| 10 | Drone CI 온프레미스 구축 | [10-Drone-CI-On-Prem](./10-Drone-CI-On-Prem/README.md) |
-| 11 | 통합 DevSecOps Lab | [11-Integrated-DevSecOps-Lab](./11-Integrated-DevSecOps-Lab/README.md) |
-| 12 | Advanced Day01: Docker 개요 & 첫 걸음 | [12-Advanced-Day01-Container-Basics](./12-Advanced-Day01-Container-Basics/README.md) |
-| 13 | Advanced Day02: 컨테이너 심화 | [13-Advanced-Day02-Container-DeepDive](./13-Advanced-Day02-Container-DeepDive/README.md) |
-| 14 | Advanced Day03: 이미지 빌드 기초 | [14-Advanced-Day03-Image-Build](./14-Advanced-Day03-Image-Build/README.md) |
-| 15 | Advanced Day04: 이미지 최적화 | [15-Advanced-Day04-Image-Optimization](./15-Advanced-Day04-Image-Optimization/README.md) |
-| 16 | Advanced Day05: 네트워킹 | [16-Advanced-Day05-Networking](./16-Advanced-Day05-Networking/README.md) |
-| 17 | Advanced Day06: 스토리지/백업복구 | [17-Advanced-Day06-Storage-Backup](./17-Advanced-Day06-Storage-Backup/README.md) |
-| 18 | Advanced Day07: Compose 실전 | [18-Advanced-Day07-Compose-Practice](./18-Advanced-Day07-Compose-Practice/README.md) |
-| 19 | Advanced Day08: 디버깅/운영 | [19-Advanced-Day08-Debugging-Operations](./19-Advanced-Day08-Debugging-Operations/README.md) |
-| 20 | Advanced Day09: Jenkins CI | [20-Advanced-Day09-Jenkins-CI](./20-Advanced-Day09-Jenkins-CI/README.md) |
-| 21 | OnPrem Solution: Odoo | [21-OnPrem-Solution-Odoo](./21-OnPrem-Solution-Odoo/README.md) |
-| 22 | OnPrem Solution: ERPNext | [22-OnPrem-Solution-ERPNext](./22-OnPrem-Solution-ERPNext/README.md) |
-| 23 | OnPrem Solution: Tryton | [23-OnPrem-Solution-Tryton](./23-OnPrem-Solution-Tryton/README.md) |
-| 24 | OnPrem Solution: Taiga | [24-OnPrem-Solution-Taiga](./24-OnPrem-Solution-Taiga/README.md) |
-| 25 | OnPrem Solution: Zulip | [25-OnPrem-Solution-Zulip](./25-OnPrem-Solution-Zulip/README.md) |
-| 26 | Advanced Day10: Python + 금융공학 RAG | [26-Advanced-Day10-Python-Finance-RAG](./26-Advanced-Day10-Python-Finance-RAG/README.md) |
-| 27 | Vector DB Docker Playground | [27-Vector-DB-Docker-Playground](./27-Vector-DB-Docker-Playground/README.md) |
-| 28 | 멀티 모델 & sLLM Docker 서빙 | [28-Multi-Model-sLLM-Serving](./28-Multi-Model-sLLM-Serving/README.md) |
+| 01 | Docker 소개 | [01-Docker-Introduction](./docker-basics/01-Docker-Introduction/README.md) |
+| 02 | Docker 설치 | [02-Docker-Installation](./docker-basics/02-Docker-Installation/README.md) |
+| 03 | Docker Hub 이미지 Pull/Run | [03-Pull-from-DockerHub-and-Run-Docker-Images](./docker-basics/03-Pull-from-DockerHub-and-Run-Docker-Images/README.md) |
+| 04 | 이미지 Build/Run/Push | [04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub](./docker-basics/04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub/README.md) |
+| 05 | 핵심 Docker 명령어 | [05-Essential-Docker-Commands](./docker-basics/05-Essential-Docker-Commands/README.md) |
+
+### DevSecOps On-Prem 도구 — `devsecops-on-prem/`
+
+| 단계 | 주제 | 이동 |
+|---|---|---|
+| 06 | Jenkins 온프레미스 구축 | [06-Jenkins-Server-On-Prem](./devsecops-on-prem/06-Jenkins-Server-On-Prem/README.md) |
+| 07 | GitLab CE 온프레미스 구축 | [07-GitLab-CE-On-Prem](./devsecops-on-prem/07-GitLab-CE-On-Prem/README.md) |
+| 08 | SonarQube 온프레미스 구축 | [08-SonarQube-On-Prem](./devsecops-on-prem/08-SonarQube-On-Prem/README.md) |
+| 09 | Nexus Repository 온프레미스 구축 | [09-Nexus-Repository-On-Prem](./devsecops-on-prem/09-Nexus-Repository-On-Prem/README.md) |
+| 10 | Drone CI 온프레미스 구축 | [10-Drone-CI-On-Prem](./devsecops-on-prem/10-Drone-CI-On-Prem/README.md) |
+| 11 | 통합 DevSecOps Lab | [11-Integrated-DevSecOps-Lab](./devsecops-on-prem/11-Integrated-DevSecOps-Lab/README.md) |
+
+### Advanced 심화 과정 — `_shared-advanced-core/labs/`
+
+| 단계 | 주제 | 이동 |
+|---|---|---|
+| Advanced Day01 | Docker 개요 & 첫 걸음 | [day01](./\_shared-advanced-core/labs/day01/README.md) |
+| Advanced Day02 | 컨테이너 심화 (프로세스/자원/IO) | [day02](./\_shared-advanced-core/labs/day02/README.md) |
+| Advanced Day03 | 이미지 빌드 기초 (Dockerfile) | [day03](./\_shared-advanced-core/labs/day03/README.md) |
+| Advanced Day04 | 이미지 최적화 (멀티스테이지) | [day04](./\_shared-advanced-core/labs/day04/README.md) |
+| Advanced Day05 | 네트워킹 (브리지/DNS/통신) | [day05](./\_shared-advanced-core/labs/day05/README.md) |
+| Advanced Day06 | 스토리지 & 백업/복구 | [day06](./\_shared-advanced-core/labs/day06/README.md) |
+| Advanced Day07 | Compose 실전 | [day07](./\_shared-advanced-core/labs/day07/README.md) |
+| Advanced Day08 | 디버깅 & 운영 | [day08](./\_shared-advanced-core/labs/day08/README.md) |
+| Advanced Day09 | Jenkins CI 파이프라인 | [day09](./\_shared-advanced-core/labs/day09/README.md) |
+
+### OnPrem ERP/협업 솔루션 — `_shared-onprem-core/solutions/`
+
+| 단계 | 솔루션 | 이동 |
+|---|---|---|
+| 21 | Odoo ERP | [odoo](./\_shared-onprem-core/solutions/odoo/README.md) |
+| 22 | ERPNext | [erpnext](./\_shared-onprem-core/solutions/erpnext/README.md) |
+| 23 | Tryton | [tryton](./\_shared-onprem-core/solutions/tryton/README.md) |
+| 24 | Taiga (프로젝트 관리) | [taiga](./\_shared-onprem-core/solutions/taiga/README.md) |
+| 25 | Zulip (팀 메시지) | [zulip](./\_shared-onprem-core/solutions/zulip/README.md) |
+
+### AI / ML 도구 — `ai-tools/`
+
+| 단계 | 주제 | 이동 |
+|---|---|---|
+| 27 | Vector DB Docker Playground | [27-Vector-DB-Docker-Playground](./ai-tools/27-Vector-DB-Docker-Playground/README.md) |
+| 28 | 멀티 모델 & sLLM Docker 서빙 | [28-Multi-Model-sLLM-Serving](./ai-tools/28-Multi-Model-sLLM-Serving/README.md) |
 
 ---
 
-## 2. Docker Desktop 빠른 제어
+## 3. Docker Desktop 빠른 제어
 
 ### CLI
 ```bash
@@ -225,7 +300,7 @@ Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 
 ---
 
-## 3. 아키텍처 개요
+## 4. 아키텍처 개요
 
 ### 핵심 플랫폼 레이어
 | 레이어 | 구성 요소 |
@@ -261,7 +336,7 @@ Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 
 ---
 
-## 4. 온프렘 최소 자원 산정
+## 5. 온프렘 최소 자원 산정
 
 > [!IMPORTANT]
 > 아래 수치는 단일 노드 실습/PoC 최소 기준입니다. 운영 환경은 최소 1.5~2배 여유 자원을 권장합니다.
@@ -270,12 +345,12 @@ Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 - 06~10장: Jenkins, GitLab CE, SonarQube, Nexus, Drone
 - 11장: Integrated DevSecOps Lab (`docker-compose.yml`) 기본/선택 프로파일
 - 기준 파일:
-  - `06-Jenkins-Server-On-Prem/Dockerfile`
-  - `07-GitLab-CE-On-Prem/Dockerfile`
-  - `08-SonarQube-On-Prem/Dockerfile`
-  - `09-Nexus-Repository-On-Prem/Dockerfile`
-  - `10-Drone-CI-On-Prem/Dockerfile`
-  - `11-Integrated-DevSecOps-Lab/docker-compose.yml`
+  - `devsecops-on-prem/06-Jenkins-Server-On-Prem/Dockerfile`
+  - `devsecops-on-prem/07-GitLab-CE-On-Prem/Dockerfile`
+  - `devsecops-on-prem/08-SonarQube-On-Prem/Dockerfile`
+  - `devsecops-on-prem/09-Nexus-Repository-On-Prem/Dockerfile`
+  - `devsecops-on-prem/10-Drone-CI-On-Prem/Dockerfile`
+  - `devsecops-on-prem/11-Integrated-DevSecOps-Lab/docker-compose.yml`
 
 ### 이미지별 최소 컴퓨팅 자원
 | 구분 | Docker 이미지 | 최소 vCPU | 최소 RAM | 최소 디스크(볼륨) | 비고 |
@@ -311,7 +386,7 @@ Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 
 ---
 
-## 5. 운영 고도화 확장 스택
+## 6. 운영 고도화 확장 스택
 
 ### 보안/접근제어
 - Keycloak: SSO 및 중앙 인증
@@ -337,7 +412,7 @@ Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 
 ---
 
-## 6. 통합 의존관계 다이어그램
+## 7. 통합 의존관계 다이어그램
 
 ```mermaid
 flowchart LR
@@ -402,7 +477,7 @@ flowchart LR
 
 ---
 
-## 7. WSL 포트 80 트러블슈팅
+## 8. WSL 포트 80 트러블슈팅
 
 ### 1) 점유 프로세스 확인
 ```bash
@@ -432,7 +507,7 @@ sudo ss -ltnp 'sport = :80'
 
 ---
 
-## 8. Docker 이미지 목록
+## 9. Docker 이미지 목록
 
 | 애플리케이션 | Docker 이미지 |
 |---|---|
@@ -449,7 +524,7 @@ sudo ss -ltnp 'sport = :80'
 
 ---
 
-## 9. 대상 독자와 도입 로드맵
+## 10. 대상 독자와 도입 로드맵
 
 ### 활용 대상
 - Docker를 처음 학습하는 엔지니어
@@ -471,64 +546,58 @@ sudo ss -ltnp 'sport = :80'
 
 ---
 
-## 10. 확장 커리큘럼 맵 (12~27)
+## 11. 확장 커리큘럼 맵
 
 난이도 순 확장 실습 구조:
-- `12~20`: Advanced Day01~Day09
-- `21~25`: OnPrem 솔루션별 소스 학습(odoo, erpnext, tryton, taiga, zulip)
-- `26`: Python 기반 금융공학 RAG 실습
-- `27`: 경량 오픈소스 Vector DB Docker 실습
-- `28`: 멀티 모델 & sLLM Docker 서빙 (Gemma3, Llama 3, DeepSeek-R1)
+- `_shared-advanced-core/labs/day01~09`: Advanced 심화 과정 (구 12~20장)
+- `_shared-onprem-core/solutions/`: OnPrem ERP/협업 솔루션 (구 21~25장)
+- `ai-tools/27-Vector-DB-Docker-Playground`: 경량 오픈소스 Vector DB Docker 실습
+- `ai-tools/28-Multi-Model-sLLM-Serving`: 멀티 모델 & sLLM Docker 서빙 (Gemma3, Llama 3, DeepSeek-R1)
 
-### Advanced 파트 (12~20)
-| 번호 | 폴더 | 핵심 주제 |
-|---|---|---|
-| 12 | `12-Advanced-Day01-Container-Basics` | Docker 기초/첫 실행 |
-| 13 | `13-Advanced-Day02-Container-DeepDive` | 프로세스/자원/IO |
-| 14 | `14-Advanced-Day03-Image-Build` | Dockerfile/이미지 빌드 |
-| 15 | `15-Advanced-Day04-Image-Optimization` | 멀티스테이지/최적화 |
-| 16 | `16-Advanced-Day05-Networking` | 브리지/DNS/통신 |
-| 17 | `17-Advanced-Day06-Storage-Backup` | 볼륨/백업/복구 |
-| 18 | `18-Advanced-Day07-Compose-Practice` | Compose 실전 |
-| 19 | `19-Advanced-Day08-Debugging-Operations` | 장애 분석/Runbook |
-| 20 | `20-Advanced-Day09-Jenkins-CI` | CI 파이프라인 |
+### Advanced 심화 파트 — `_shared-advanced-core/labs/`
+| 폴더 | 핵심 주제 |
+|---|---|
+| `day01` | Docker 기초/첫 실행 |
+| `day02` | 프로세스/자원/IO |
+| `day03` | Dockerfile/이미지 빌드 |
+| `day04` | 멀티스테이지/최적화 |
+| `day05` | 브리지/DNS/통신 |
+| `day06` | 볼륨/백업/복구 |
+| `day07` | Compose 실전 |
+| `day08` | 장애 분석/Runbook |
+| `day09` | CI 파이프라인 |
 
-### OnPrem 솔루션 파트 (21~25)
-| 번호 | 폴더 | 솔루션 |
-|---|---|---|
-| 21 | `21-OnPrem-Solution-Odoo` | Odoo |
-| 22 | `22-OnPrem-Solution-ERPNext` | ERPNext |
-| 23 | `23-OnPrem-Solution-Tryton` | Tryton |
-| 24 | `24-OnPrem-Solution-Taiga` | Taiga |
-| 25 | `25-OnPrem-Solution-Zulip` | Zulip |
+### OnPrem 솔루션 파트 — `_shared-onprem-core/solutions/`
+| 폴더 | 솔루션 |
+|---|---|
+| `odoo` | Odoo ERP |
+| `erpnext` | ERPNext |
+| `tryton` | Tryton |
+| `taiga` | Taiga (프로젝트 관리) |
+| `zulip` | Zulip (팀 메시지) |
 
-### Python + 금융공학 RAG 파트 (26)
-| 번호 | 폴더 | 핵심 주제 |
-|---|---|---|
-| 26 | `26-Advanced-Day10-Python-Finance-RAG` | 금융공학 도메인 RAG(수집/청킹/검색/근거답변) |
-
-### Vector DB Docker 파트 (27)
-| 번호 | 폴더 | 핵심 주제 |
-|---|---|---|
-| 27 | `27-Vector-DB-Docker-Playground` | Qdrant/Chroma/Weaviate/pgvector 단일 실행 실습 |
-
-### 멀티 모델 & sLLM 서빙 파트 (28)
-| 번호 | 폴더 | 핵심 주제 |
-|---|---|---|
-| 28 | `28-Multi-Model-sLLM-Serving` | Ollama로 Gemma3/Llama3/DeepSeek-R1 CPU·GPU 서빙 |
+### AI 도구 파트 — `ai-tools/`
+| 폴더 | 핵심 주제 |
+|---|---|
+| `27-Vector-DB-Docker-Playground` | Qdrant/Chroma/Weaviate/pgvector 단일 실행 실습 |
+| `28-Multi-Model-sLLM-Serving` | Ollama로 Gemma3/Llama3/DeepSeek-R1 CPU·GPU 서빙 |
 
 ---
 
-## 11. 공용 리소스 폴더
+## 12. 공용 리소스 폴더
 
-커리큘럼 폴더(12~25)와 별도로, 원본 병합 레포의 공용 리소스는 아래에 유지합니다.
+Advanced 과정과 OnPrem 솔루션의 정식 파일은 아래 공용 폴더에 통합 관리합니다.
 
 - `_shared-advanced-core/`
-  - 공용 템플릿/문서/캡스톤 (`templates`, `docs`, `capstone`)
-  - `labs/dayXX`는 상위 커리큘럼 폴더(12~20)로 연결되는 링크
+  - `labs/day01~09`: Advanced 심화 과정 실습 파일 (구 12~20장과 동일 내용)
+  - `capstone/`: 캡스톤 프로젝트
+  - `docs/`: 강의 문서
+  - `templates/`: 공용 Dockerfile·Compose 템플릿
 - `_shared-onprem-core/`
-  - 통합 오케스트레이션(`docker-compose.yml`, `start.sh`, `stop.sh`, `sync-solutions.sh`)
-  - `solutions/*`는 상위 커리큘럼 폴더(21~25)로 연결되는 링크
+  - `solutions/odoo|erpnext|tryton|taiga|zulip`: OnPrem 솔루션별 실습 파일 (구 21~25장과 동일 내용)
+  - `docker/`: 공용 DB 초기화·인증 스크립트
+  - `scripts/`: 오케스트레이션 스크립트 (start/stop/sync)
+  - `captures/`: 실습 캡처 이미지
 
 ---
 
@@ -595,7 +664,7 @@ python src/run_lab.py
 - Weaviate
 - pgvector (PostgreSQL 확장)
 
-실습 경로: [`27-Vector-DB-Docker-Playground`](./27-Vector-DB-Docker-Playground/README.md)
+실습 경로: [`27-Vector-DB-Docker-Playground`](./ai-tools/27-Vector-DB-Docker-Playground/README.md)
 
 ---
 
@@ -621,7 +690,7 @@ Ollama Docker 이미지 하나로 Gemma3, Llama 3, DeepSeek-R1 등 최신 오픈
 ### 빠른 시작
 
 ```bash
-cd 28-Multi-Model-sLLM-Serving
+cd ai-tools/28-Multi-Model-sLLM-Serving
 
 # CPU 전용 (로컬 개발 환경)
 docker compose -f docker-compose.ollama.yml up -d
@@ -639,7 +708,7 @@ curl -s http://localhost:11434/api/generate \
 docker compose -f docker-compose.stack.yml up -d
 ```
 
-실습 경로: [`28-Multi-Model-sLLM-Serving`](./28-Multi-Model-sLLM-Serving/README.md)
+실습 경로: [`28-Multi-Model-sLLM-Serving`](./ai-tools/28-Multi-Model-sLLM-Serving/README.md)
 
 ---
 
