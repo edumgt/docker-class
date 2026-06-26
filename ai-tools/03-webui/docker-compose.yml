@@ -1,0 +1,47 @@
+# Ollama (GPU) + Open WebUI 풀 스택
+#
+# 시작:  docker compose -f docker-compose.stack.yml up -d
+# UI:    http://localhost:3000
+# API:   http://localhost:11435
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - shared-net
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:8080"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      - open-webui-data:/app/backend/data
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    networks:
+      - shared-net
+
+volumes:
+  ollama-data:
+  open-webui-data:
+
+networks:
+  shared-net:
+    external: true

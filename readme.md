@@ -42,9 +42,12 @@ docker-class/
 │   ├── 10-Drone-CI-On-Prem/               # Drone CI 경량 파이프라인
 │   └── 11-Integrated-DevSecOps-Lab/       # 전체 스택 통합 실습 (Traefik·Keycloak·Vault·Trivy·Prometheus·Grafana·Loki)
 │
-├── ai-tools/                              # AI / ML Docker 실습 (27~28장)
-│   ├── 27-Vector-DB-Docker-Playground/    # Qdrant·Chroma·Weaviate·pgvector 실습
-│   └── 28-Multi-Model-sLLM-Serving/       # Ollama CPU/GPU 서빙 + Open WebUI
+├── ai-tools/                              # AI 환경 구축 (설치 순서대로 넘버링)
+│   ├── README.md                          # 단계별 마스터 가이드
+│   ├── 01-llm-server/                     # Step 1: Ollama LLM 서버 (RTX 3080 GPU)
+│   ├── 02-vector-db/                      # Step 2: Vector DB (Qdrant·pgvector·Chroma·Weaviate)
+│   ├── 03-webui/                          # Step 3: Open WebUI 브라우저 채팅 UI
+│   └── 04-rag-stack/                      # Step 4: 통합 RAG 스택 (Ollama+Qdrant+WebUI)
 │
 ├── _shared-advanced-core/                 # Advanced 과정 공용 리소스 (12~20장 내용 포함)
 │   ├── labs/
@@ -72,7 +75,6 @@ docker-class/
 │   ├── docker/                            # 공용 DB 초기화·인증 스크립트
 │   └── scripts/                           # 오케스트레이션 스크립트
 │
-└── labs/                                  # 수강생용 기초 실습 파일 (day01~09)
 ```
 
 ---
@@ -264,12 +266,14 @@ docker-class/
 | 24 | Taiga (프로젝트 관리) | [taiga](./\_shared-onprem-core/solutions/taiga/README.md) |
 | 25 | Zulip (팀 메시지) | [zulip](./\_shared-onprem-core/solutions/zulip/README.md) |
 
-### AI / ML 도구 — `ai-tools/`
+### AI 환경 구축 — `ai-tools/` (설치 순서)
 
 | 단계 | 주제 | 이동 |
 |---|---|---|
-| 27 | Vector DB Docker Playground | [27-Vector-DB-Docker-Playground](./ai-tools/27-Vector-DB-Docker-Playground/README.md) |
-| 28 | 멀티 모델 & sLLM Docker 서빙 | [28-Multi-Model-sLLM-Serving](./ai-tools/28-Multi-Model-sLLM-Serving/README.md) |
+| Step 1 | Ollama LLM 서버 (RTX 3080 GPU) | [01-llm-server](./ai-tools/01-llm-server/README.md) |
+| Step 2 | Vector DB (Qdrant·pgvector·Chroma·Weaviate) | [02-vector-db](./ai-tools/02-vector-db/README.md) |
+| Step 3 | Open WebUI 브라우저 채팅 UI | [03-webui](./ai-tools/03-webui/README.md) |
+| Step 4 | 통합 RAG 스택 (Ollama+Qdrant+WebUI) | [04-rag-stack](./ai-tools/04-rag-stack/README.md) |
 
 ---
 
@@ -551,8 +555,10 @@ sudo ss -ltnp 'sport = :80'
 난이도 순 확장 실습 구조:
 - `_shared-advanced-core/labs/day01~09`: Advanced 심화 과정 (구 12~20장)
 - `_shared-onprem-core/solutions/`: OnPrem ERP/협업 솔루션 (구 21~25장)
-- `ai-tools/27-Vector-DB-Docker-Playground`: 경량 오픈소스 Vector DB Docker 실습
-- `ai-tools/28-Multi-Model-sLLM-Serving`: 멀티 모델 & sLLM Docker 서빙 (Gemma3, Llama 3, DeepSeek-R1)
+- `ai-tools/01-llm-server`: Ollama LLM 서버 (RTX 3080 GPU 서빙)
+- `ai-tools/02-vector-db`: Qdrant·pgvector·Chroma·Weaviate Vector DB
+- `ai-tools/03-webui`: Open WebUI 브라우저 채팅 UI
+- `ai-tools/04-rag-stack`: 통합 RAG 스택 (Ollama+Qdrant+WebUI)
 
 ### Advanced 심화 파트 — `_shared-advanced-core/labs/`
 | 폴더 | 핵심 주제 |
@@ -576,11 +582,13 @@ sudo ss -ltnp 'sport = :80'
 | `taiga` | Taiga (프로젝트 관리) |
 | `zulip` | Zulip (팀 메시지) |
 
-### AI 도구 파트 — `ai-tools/`
+### AI 환경 구축 파트 — `ai-tools/`
 | 폴더 | 핵심 주제 |
 |---|---|
-| `27-Vector-DB-Docker-Playground` | Qdrant/Chroma/Weaviate/pgvector 단일 실행 실습 |
-| `28-Multi-Model-sLLM-Serving` | Ollama로 Gemma3/Llama3/DeepSeek-R1 CPU·GPU 서빙 |
+| `01-llm-server` | Ollama GPU 서빙 (RTX 3080, 포트 11435) |
+| `02-vector-db` | Qdrant·pgvector·Chroma·Weaviate Vector DB |
+| `03-webui` | Open WebUI 브라우저 채팅 UI (포트 3000) |
+| `04-rag-stack` | 통합 RAG 스택 — Ollama+Qdrant+WebUI 한 번에 기동 |
 
 ---
 
@@ -598,50 +606,6 @@ Advanced 과정과 OnPrem 솔루션의 정식 파일은 아래 공용 폴더에 
   - `docker/`: 공용 DB 초기화·인증 스크립트
   - `scripts/`: 오케스트레이션 스크립트 (start/stop/sync)
   - `captures/`: 실습 캡처 이미지
-
----
-
-## 12. Python + 금융공학 RAG Lab
-
-추가된 `26-Advanced-Day10-Python-Finance-RAG` 폴더는 Python으로 RAG 핵심 구성요소를 직접 구현하는 금융공학 특화 실습입니다.
-
-### 학습 범위
-- 금융공학 문서 수집과 섹션/문단 기반 chunking
-- TF-IDF 유사 스코어 기반 Top-K 검색
-- 근거(citation) 포함 답변 생성
-- 질의셋 기반 정확도/근거성/재현성 평가
-
-### 커리큘럼 요약
-| 모듈 | 주제 | 산출물 |
-|---|---|---|
-| 1 | RAG 아키텍처 이해 | 구성도 |
-| 2 | 인덱싱 파이프라인 | 생성된 chunks |
-| 3 | 검색 품질 실습 | Top-K 검색 결과 |
-| 4 | 근거 기반 답변 | 답변 + citations |
-| 5 | 평가 및 개선 | 개선 리포트 |
-
-### 빠른 실행
-```bash
-# Docker
-cd 26-Advanced-Day10-Python-Finance-RAG
-docker compose up --build
-
-# Local Python
-cd 26-Advanced-Day10-Python-Finance-RAG/app
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python src/run_lab.py
-```
-
-### 실습 질의 예시
-- 듀레이션과 금리 민감도의 관계는?
-- VaR와 Expected Shortfall 비교
-- 유동성 리스크 대응 주문 전략
-- 모델 리스크 통제와 감사 추적성
-
-> [!TIP]
-> Lab 상세 안내는 `26-Advanced-Day10-Python-Finance-RAG/README.md`를 참고하세요.
 
 ---
 
@@ -664,7 +628,7 @@ python src/run_lab.py
 - Weaviate
 - pgvector (PostgreSQL 확장)
 
-실습 경로: [`27-Vector-DB-Docker-Playground`](./ai-tools/27-Vector-DB-Docker-Playground/README.md)
+실습 경로: [`02-vector-db`](./ai-tools/02-vector-db/README.md)
 
 ---
 
@@ -687,28 +651,31 @@ Ollama Docker 이미지 하나로 Gemma3, Llama 3, DeepSeek-R1 등 최신 오픈
 | 다국어(한국어) | `qwen2.5:7b` | 한국어 강점 |
 | 경량/엣지 | `phi4` | Microsoft, 14B |
 
-### 빠른 시작
+### 빠른 시작 (RTX 3080 GPU / 포트 11435)
 
 ```bash
-cd ai-tools/28-Multi-Model-sLLM-Serving
+# Step 1: LLM 서버 (GPU)
+cd ai-tools/01-llm-server
+docker compose -f docker-compose.gpu.yml up -d
 
-# CPU 전용 (로컬 개발 환경)
-docker compose -f docker-compose.ollama.yml up -d
+# 모델 Pull (qwen3.5 권장 — VRAM 6.6GB, RTX 3080 완전 처리)
+docker exec ollama ollama pull qwen3.5:latest
+docker exec ollama ollama pull nomic-embed-text   # 임베딩용
 
-# 모델 Pull
-docker exec -it ollama ollama pull gemma3:2b
-
-# REST API 테스트
-curl -s http://localhost:11434/api/generate \
+# REST API 테스트 (포트 11435)
+curl -s http://localhost:11435/api/generate \
   -H "Content-Type: application/json" \
-  -d '{"model":"gemma3:2b","prompt":"Docker란 무엇인가?","stream":false}' \
+  -d '{"model":"qwen3.5:latest","prompt":"Docker란 무엇인가?","stream":false}' \
   | python3 -m json.tool
 
-# Open WebUI 포함 풀 스택 (UI: http://localhost:3000)
-docker compose -f docker-compose.stack.yml up -d
+# Step 3: Open WebUI (UI: http://localhost:3000)
+cd ../03-webui && docker compose up -d
+
+# 또는 Step 4: 전체 RAG 스택 한 번에
+cd ../04-rag-stack && docker compose up -d
 ```
 
-실습 경로: [`28-Multi-Model-sLLM-Serving`](./ai-tools/28-Multi-Model-sLLM-Serving/README.md)
+실습 경로: [`ai-tools/`](./ai-tools/README.md)
 
 ---
 

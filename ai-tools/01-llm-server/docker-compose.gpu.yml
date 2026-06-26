@@ -1,0 +1,38 @@
+# Ollama GPU 서빙 — Windows WSL2 + NVIDIA RTX 3080 기준
+#
+# 전제 조건:
+#   1. Windows 호스트에 NVIDIA 드라이버 576+ 설치
+#   2. Docker Desktop 4.73.1+  (별도 nvidia-container-toolkit 불필요)
+#   3. docker network create shared-net
+#
+# 시작:
+#   docker compose -f docker-compose.ollama-gpu.yml up -d
+#
+# GPU 확인:
+#   docker exec ollama nvidia-smi
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11435:11434"       # 호스트 11435 → 컨테이너 11434
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - shared-net
+
+volumes:
+  ollama-data:
+
+networks:
+  shared-net:
+    external: true

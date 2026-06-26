@@ -1,0 +1,81 @@
+# 통합 AI RAG 스택 — Ollama (GPU) + Qdrant + Open WebUI
+#
+# 전제:
+#   docker network create shared-net
+#   NVIDIA GPU (Docker Desktop 4.73.1 이상)
+#
+# 시작: docker compose up -d
+# 종료: docker compose down
+#
+# 접속:
+#   Open WebUI : http://localhost:3000
+#   Ollama API : http://localhost:11435
+#   Qdrant API : http://localhost:6333
+
+services:
+
+  # ──────────────────────────────────────────────
+  # 1. LLM 서버 (RTX 3080 GPU 서빙)
+  # ──────────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - shared-net
+
+  # ──────────────────────────────────────────────
+  # 2. Vector DB (임베딩 저장·검색)
+  # ──────────────────────────────────────────────
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"     # REST API + 대시보드
+      - "6334:6334"     # gRPC
+    volumes:
+      - qdrant-data:/qdrant/storage
+    restart: unless-stopped
+    networks:
+      - shared-net
+
+  # ──────────────────────────────────────────────
+  # 3. 채팅 UI (멀티 모델, Qdrant RAG 연동 가능)
+  # ──────────────────────────────────────────────
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:8080"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - VECTOR_DB=qdrant
+      - QDRANT_URL=http://qdrant:6333
+    volumes:
+      - open-webui-data:/app/backend/data
+    depends_on:
+      - ollama
+      - qdrant
+    restart: unless-stopped
+    networks:
+      - shared-net
+
+volumes:
+  ollama-data:
+  qdrant-data:
+  open-webui-data:
+
+networks:
+  shared-net:
+    external: true

@@ -1,0 +1,18 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11435:11434"       # 호스트 11435 → 컨테이너 11434 (포트 충돌 방지)
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - shared-net
+
+volumes:
+  ollama-data:
+
+networks:
+  shared-net:
+    external: true
