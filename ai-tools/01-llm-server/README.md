@@ -9,11 +9,11 @@
 
 | 파일 | 설명 |
 |---|---|
-| `docker-compose.ollama.yml` | Ollama 단독 (CPU 전용, 포트 11435) |
-| `docker-compose.ollama-gpu.yml` | Ollama 단독 (NVIDIA GPU, 포트 11435) |
-| `docker-compose.stack.yml` | Ollama GPU + Open WebUI 풀 스택 |
+| `docker-compose.cpu.yml` | Ollama 단독 (CPU 전용, 포트 11435) |
+| `docker-compose.gpu.yml` | Ollama 단독 (NVIDIA GPU, 포트 11435) |
 
 > 포트 `11435`를 사용합니다 (기본 11434 대비 충돌 방지).
+> Open WebUI 포함 풀 스택은 `../03-webui/` 참고.
 
 ---
 
@@ -22,9 +22,9 @@
 ### A. CPU 전용
 
 ```bash
-cd ai-tools/28-Multi-Model-sLLM-Serving
+cd ai-tools/01-llm-server
 
-docker compose -f docker-compose.ollama.yml up -d
+docker compose -f docker-compose.cpu.yml up -d
 curl http://localhost:11435/
 ```
 
@@ -33,7 +33,7 @@ curl http://localhost:11435/
 > Docker Desktop 4.73.1+ 은 별도 nvidia-container-toolkit 설치 없이 GPU 지원
 
 ```bash
-docker compose -f docker-compose.ollama-gpu.yml up -d
+docker compose -f docker-compose.gpu.yml up -d
 
 # GPU 사용 확인
 docker exec ollama nvidia-smi
@@ -42,7 +42,9 @@ docker exec ollama nvidia-smi
 ### C. Ollama GPU + Open WebUI 풀 스택
 
 ```bash
-docker compose -f docker-compose.stack.yml up -d
+# 03-webui 폴더에서 기동
+cd ../03-webui
+docker compose up -d
 # UI: http://localhost:3000  (최초 접속 시 관리자 계정 생성)
 # API: http://localhost:11435
 ```
@@ -145,7 +147,7 @@ docker exec -it ollama ollama run qwen3.5:latest
 docker exec ollama ollama rm llava:34b
 
 # 컨테이너 + 볼륨 전체 정리
-docker compose -f docker-compose.stack.yml down -v
+docker compose -f docker-compose.gpu.yml down -v
 ```
 
 ---
