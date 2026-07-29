@@ -3,6 +3,9 @@
 > 이 가이드는 **Windows 11 + WSL2 + Docker Desktop + NVIDIA GPU** 환경을 기준으로 작성되었습니다.
 > 실습 환경: Docker Desktop 4.73.1 / Engine 29.4.3 / RTX 3080 (8GB) / CUDA 12.9
 
+> [!TIP]
+> Windows PC를 처음 설정하는 학습자는 먼저 [Windows WSL 개발 환경 구축 가이드](./WSL-Setup.md)를 완료하세요. BIOS 가상화, WSL 배포판 설치, 사용자 설정, 저장 위치와 VS Code 연동까지 다룹니다.
+
 ---
 
 ## 1. 환경별 설치 경로
@@ -17,6 +20,8 @@
 ---
 
 ## 2. Windows 11 + WSL2 설치
+
+아래는 빠른 설치 경로입니다. 회사 PC 정책, 프록시, WSL 설치 오류 또는 개발 환경 초기 설정이 필요한 경우에는 위의 상세 WSL 가이드를 사용합니다.
 
 ### Step 1 — WSL2 활성화
 
@@ -52,6 +57,9 @@ nvidia-smi
 3. Settings → Resources → WSL Integration → **Ubuntu-22.04** ✅
 4. Settings → Resources → **CPU: 12+ / Memory: 16GB+** 권장
 
+> [!IMPORTANT]
+> 소스 코드는 `/mnt/c/...` 대신 WSL Linux 파일 시스템(예: `~/workspace/docker-class`)에 clone하세요. 파일 감시와 bind mount 성능이 더 안정적입니다.
+
 ### Step 4 — 설치 검증
 
 ```bash
@@ -65,6 +73,13 @@ docker info | grep -E "CPUs|Memory|Kernel"
 # GPU 동작 테스트
 docker run --rm --gpus all nvidia/cuda:12.9.0-base-ubuntu22.04 nvidia-smi
 # GPU 정보가 출력되면 GPU 지원 완료
+```
+
+CPU 전용 PC에서는 마지막 GPU 테스트를 건너뛰어도 됩니다. 대신 다음 명령으로 컨테이너 실행을 확인합니다.
+
+```bash
+docker run --rm hello-world
+docker run --rm -it alpine:3.21 sh -c 'uname -a; echo Docker is ready'
 ```
 
 ---
@@ -192,6 +207,28 @@ sudo systemctl restart docker
 ---
 
 ## 10. 트러블슈팅
+
+### `docker: command not found` 또는 Docker daemon 연결 실패
+
+1. Docker Desktop이 실행 중인지 확인합니다.
+2. Docker Desktop → Settings → Resources → WSL Integration에서 사용하는 Ubuntu 배포판을 활성화합니다.
+3. WSL 터미널을 완전히 닫고 새로 열어 `docker version`을 다시 실행합니다.
+
+Windows PowerShell에서 다음을 실행한 뒤 Docker Desktop을 다시 실행하는 방법도 있습니다.
+
+```powershell
+wsl --shutdown
+```
+
+### WSL에서 파일 권한 또는 Git 실행 파일 문제
+
+프로젝트를 `/mnt/c/Users/...`에서 실행했을 때 발생하기 쉽습니다. Linux 홈으로 옮긴 뒤 다시 clone합니다.
+
+```bash
+mkdir -p ~/workspace
+cd ~/workspace
+git clone <repository-url>
+```
 
 ### 포트 80/443 충돌 (WSL2)
 ```bash

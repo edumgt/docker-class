@@ -1,0 +1,28 @@
+services:
+  ai-dev:
+    build:
+      context: .
+    container_name: ai-dev
+    working_dir: /workspace
+    command: >-
+      bash -lc "jupyter lab --ip=0.0.0.0 --port=8888 --no-browser
+      --ServerApp.token=$${JUPYTER_TOKEN} --ServerApp.password='' &
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    environment:
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:?Set JUPYTER_TOKEN in .env}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      QDRANT_URL: ${QDRANT_URL:-http://qdrant:6333}
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+    volumes:
+      - ./app:/workspace/app
+      - ./tests:/workspace/tests
+      - ./workspace:/workspace/workspace
+    restart: unless-stopped
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

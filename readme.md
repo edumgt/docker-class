@@ -20,6 +20,7 @@
 - [12. 공용 리소스 폴더](#12-공용-리소스-폴더)
 - [13. Vector DB 원리와 Docker 실습](#13-vector-db-원리와-docker-실습)
 - [14. 멀티 모델 & sLLM Docker 서빙](#14-멀티-모델--sllm-docker-서빙)
+- [15. Windows WSL·Docker·AI 개발 환경](#15-windows-wsldockerai-개발-환경)
 
 ---
 
@@ -47,7 +48,8 @@ docker-class/
 │   ├── 01-llm-server/                     # Step 1: Ollama LLM 서버 (RTX 3080 GPU)
 │   ├── 02-vector-db/                      # Step 2: Vector DB (Qdrant·pgvector·Chroma·Weaviate)
 │   ├── 03-webui/                          # Step 3: Open WebUI 브라우저 채팅 UI
-│   └── 04-rag-stack/                      # Step 4: 통합 RAG 스택 (Ollama+Qdrant+WebUI)
+│   ├── 04-rag-stack/                      # Step 4: 통합 RAG 스택 (Ollama+Qdrant+WebUI)
+│   └── 05-ai-dev-container/               # Step 5: AI 응용 개발 컨테이너 (Python·Jupyter·FastAPI)
 │
 ├── _shared-advanced-core/                 # Advanced 과정 공용 리소스 (12~20장 내용 포함)
 │   ├── labs/
@@ -274,6 +276,7 @@ docker-class/
 | Step 2 | Vector DB (Qdrant·pgvector·Chroma·Weaviate) | [02-vector-db](./ai-tools/02-vector-db/README.md) |
 | Step 3 | Open WebUI 브라우저 채팅 UI | [03-webui](./ai-tools/03-webui/README.md) |
 | Step 4 | 통합 RAG 스택 (Ollama+Qdrant+WebUI) | [04-rag-stack](./ai-tools/04-rag-stack/README.md) |
+| Step 5 | AI 응용 개발 컨테이너 (Python·Jupyter·FastAPI) | [05-ai-dev-container](./ai-tools/05-ai-dev-container/README.md) |
 
 ---
 
@@ -559,6 +562,7 @@ sudo ss -ltnp 'sport = :80'
 - `ai-tools/02-vector-db`: Qdrant·pgvector·Chroma·Weaviate Vector DB
 - `ai-tools/03-webui`: Open WebUI 브라우저 채팅 UI
 - `ai-tools/04-rag-stack`: 통합 RAG 스택 (Ollama+Qdrant+WebUI)
+- `ai-tools/05-ai-dev-container`: AI 응용 개발 컨테이너 (Python·Jupyter·FastAPI)
 
 ### Advanced 심화 파트 — `_shared-advanced-core/labs/`
 | 폴더 | 핵심 주제 |
@@ -589,6 +593,7 @@ sudo ss -ltnp 'sport = :80'
 | `02-vector-db` | Qdrant·pgvector·Chroma·Weaviate Vector DB |
 | `03-webui` | Open WebUI 브라우저 채팅 UI (포트 3000) |
 | `04-rag-stack` | 통합 RAG 스택 — Ollama+Qdrant+WebUI 한 번에 기동 |
+| `05-ai-dev-container` | AI 응용 개발 — Python·JupyterLab·FastAPI·RAG 라이브러리 |
 
 ---
 
@@ -676,6 +681,14 @@ cd ../04-rag-stack && docker compose up -d
 ```
 
 실습 경로: [`ai-tools/`](./ai-tools/README.md)
+
+---
+
+## 15. Windows WSL·Docker·AI 개발 환경
+
+Windows 학습자는 먼저 [WSL 개발 환경 구축 가이드](./docker-basics/02-Docker-Installation/WSL-Setup.md)로 WSL 2, Ubuntu, VS Code Remote WSL, Docker Desktop 연동을 완료합니다. 저장소는 `/mnt/c/...`보다 WSL 홈의 `~/workspace`에 두는 것을 권장합니다.
+
+AI 응용을 개발할 때는 [AI 응용 개발 컨테이너](./ai-tools/05-ai-dev-container/README.md)를 사용합니다. FastAPI, JupyterLab, LangChain/LangGraph/LlamaIndex, Ollama, Qdrant/Chroma/pgvector 클라이언트, 테스트·정적 분석 도구가 포함되어 있으며, 기존 Ollama·Qdrant RAG 스택과 `shared-net`에서 연결됩니다.
 
 ---
 

@@ -15,7 +15,8 @@ ai-tools/
 ├── 01-llm-server/          ← Step 1: Ollama LLM 서버 (GPU)
 ├── 02-vector-db/           ← Step 2: Vector DB (Qdrant / pgvector / Chroma / Weaviate)
 ├── 03-webui/               ← Step 3: Open WebUI (브라우저 채팅 UI)
-└── 04-rag-stack/           ← Step 4: 통합 RAG 스택 (Ollama + Qdrant + WebUI)
+├── 04-rag-stack/           ← Step 4: 통합 RAG 스택 (Ollama + Qdrant + WebUI)
+└── 05-ai-dev-container/    ← Step 5: AI 응용 개발 컨테이너 (Python/Jupyter/FastAPI)
 ```
 
 ---
@@ -41,6 +42,10 @@ docker network create shared-net 2>/dev/null || echo "already exists"
 ```bash
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 ```
+
+### 0-4. Windows WSL 사용 시 프로젝트 위치
+
+Windows에서는 저장소를 `/mnt/c/...`가 아닌 WSL 홈(예: `~/workspace/docker-class`)에 두는 것을 권장합니다. bind mount, 파일 변경 감지, Python 가상환경 성능이 좋아집니다. 자세한 초기 설정은 [WSL 개발 환경 구축 가이드](../docker-basics/02-Docker-Installation/WSL-Setup.md)를 참고하세요.
 
 ---
 
@@ -177,6 +182,45 @@ curl -s -X PUT http://localhost:6333/collections/docs \
 
 ---
 
+## Step 5 — AI 응용 개발 컨테이너
+
+📁 [`05-ai-dev-container/`](./05-ai-dev-container/)
+
+LLM/RAG 서비스를 호출하는 애플리케이션 코드는 호스트 Python 대신 독립 컨테이너에서 개발합니다. 다음 오픈소스가 함께 설치됩니다.
+
+| 분류 | 구성요소 | 용도 |
+|---|---|---|
+| API | FastAPI, Uvicorn, Pydantic | REST API 및 설정 검증 |
+| LLM/RAG | LangChain, LangGraph, LlamaIndex | 체인·에이전트·문서 인덱싱 |
+| 모델/임베딩 | Ollama Python, Sentence Transformers, Transformers | 로컬 LLM 및 임베딩 호출 |
+| Vector DB | Qdrant Client, ChromaDB, pgvector | 벡터 저장·검색 클라이언트 |
+| 데이터/관측성 | SQLAlchemy, Psycopg, HTTPX, Loguru | DB·HTTP·로깅 |
+| 개발 도구 | JupyterLab, Ruff, Pytest, Debugpy | 노트북·정적 분석·테스트·디버깅 |
+
+먼저 Step 4 RAG 스택을 실행하거나, 최소한 `ollama`과 `qdrant` 컨테이너가 `shared-net`에 연결되어 있어야 합니다.
+
+```bash
+cd ai-tools/05-ai-dev-container
+cp .env.example .env
+docker compose up --build -d
+
+# JupyterLab: http://localhost:8888/lab?token=change-me
+# 예제 API:  http://localhost:8000/docs
+docker compose logs -f ai-dev
+```
+
+`.env`의 `JUPYTER_TOKEN`은 반드시 임의의 긴 값으로 바꾸고, API 키는 Git에 커밋하지 않습니다. 컨테이너 안에서는 `http://ollama:11434`, `http://qdrant:6333`처럼 Docker 서비스 이름으로 통신합니다. 호스트에서 접근할 때만 각각 `http://localhost:11435`, `http://localhost:6333`을 사용합니다.
+
+개발 컨테이너 셸과 기본 검증:
+
+```bash
+docker compose exec ai-dev bash
+pytest -q
+curl http://localhost:8000/health
+```
+
+---
+
 ## 포트 요약
 
 | 단계 | 서비스 | 포트 | 설명 |
@@ -186,6 +230,8 @@ curl -s -X PUT http://localhost:6333/collections/docs \
 | Step 2 | Qdrant gRPC | `6334` | Vector DB gRPC |
 | Step 2 | pgvector | `5432` | PostgreSQL + 벡터 확장 |
 | Step 3 | Open WebUI | `3000` | 브라우저 채팅 UI |
+| Step 5 | FastAPI 예제 API | `8000` | AI 응용 API 개발·검증 |
+| Step 5 | JupyterLab | `8888` | 노트북 기반 탐색·실험 |
 
 ---
 

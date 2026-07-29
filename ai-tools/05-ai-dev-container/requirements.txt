@@ -1,0 +1,33 @@
+# API / configuration
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+pydantic-settings>=2.0,<3.0
+
+# LLM / RAG
+ollama>=0.4,<1.0
+langchain>=0.3,<2.0
+langchain-community>=0.3,<1.0
+langchain-ollama>=0.2,<2.0
+langgraph>=0.2,<2.0
+llama-index>=0.12,<1.0
+sentence-transformers>=3.0,<4.0
+transformers>=4.40,<5.0
+
+# Vector DB / data access
+qdrant-client>=1.12,<2.0
+chromadb>=0.5,<2.0
+pgvector>=0.3,<1.0
+SQLAlchemy>=2.0,<3.0
+psycopg[binary]>=3.0,<4.0
+
+# Application tools
+httpx>=0.27,<1.0
+loguru>=0.7,<1.0
+python-dotenv>=1.0,<2.0
+
+# Development tools
+jupyterlab>=4.0,<5.0
+ipykernel>=6.0,<7.0
+debugpy>=1.8,<2.0
+pytest>=8.0,<9.0
+ruff>=0.8,<1.0
