@@ -10,6 +10,7 @@ services:
     networks:
     - shared-net
   qdrant:
+  
     image: qdrant/qdrant:latest
     container_name: qdrant
     ports:
