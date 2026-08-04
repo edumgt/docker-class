@@ -1,2 +1,1 @@
-docker run --rm -v "$(pwd):/data" clearlinux/tesseract-ocr \
-  tesseract ./a.pdf /data/ -l kor+eng
+docker run --rm -v "$(pwd):/data" jbarlow83/ocrmypdf:polyglot -l kor+eng /data/input.pdf /data/output.pdf
