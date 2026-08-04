@@ -1,0 +1,17 @@
+name: setup-folders
+description: 폴더를 생성하고 파일을 복사하는 sh 스크립트를 포함한 YAML 예시
+
+script: |
+  #!/bin/sh
+  set -eu
+
+  # 대상 폴더 생성 (이미 있으면 무시)
+  mkdir -p ./dist
+  mkdir -p ./dist/config
+  mkdir -p ./dist/data
+
+  # 파일 복사
+  cp ./readme.md ./dist/
+  cp -r ./tessdata ./dist/data/
+
+  echo "폴더 생성 및 파일 복사 완료"
