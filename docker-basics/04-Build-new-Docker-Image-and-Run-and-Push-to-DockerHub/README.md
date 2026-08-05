@@ -1,137 +1,170 @@
 # 흐름-2: 새 Docker 이미지 생성 → 실행 → Docker Hub에 푸시
 
+> 이 문서의 모든 명령은 `Nginx-DockerFiles` 폴더의 실제 파일(`Dockerfile`, `index.html`, `app.js`)을 기준으로 작성되었으며, 아래 순서 그대로 실행해 Docker Hub push까지 검증되었습니다.
+
+## 사전 준비
+- Docker Hub 계정 생성: https://hub.docker.com/
+- 아래 명령에서 **`<your-docker-hub-id>`**는 본인의 Docker Hub 계정 아이디로 바꿔 사용합니다. (이 문서의 실제 검증 예시는 `edumgt` 계정을 사용했습니다.)
+- `docker login` 으로 미리 로그인되어 있어야 push가 가능합니다.
+
+```bash
+docker login
+# Username: <your-docker-hub-id>
+# Password: <Docker Hub 비밀번호 또는 Access Token>
+```
+
+```text
+Login Succeeded
+```
+
 ## 1. Dockerfile 준비
-**Dockerfile**
+`Nginx-DockerFiles` 폴더에는 다음 3개 파일이 있습니다.
+
+**Nginx-DockerFiles/Dockerfile**
 ```Dockerfile
-FROM nginx
-COPY index.html /usr/share/nginx/html
+FROM nginx:latest
+
+COPY ./index.html /usr/share/nginx/html
+COPY ./app.js /usr/share/nginx/html
+```
+
+**Nginx-DockerFiles/index.html**
+```html
+Welcome to Stack Simplify - NGINX-V1 - Custom Image
+```
+
+**Nginx-DockerFiles/app.js**
+```js
+// test
 ```
 
 ## 2. Dockerfile로 이미지 빌드
 ![alt text](image.png)
 ![alt text](image-1.png)
 
-```bash
-docker build --pull --rm -f '04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub\Nginx-DockerFiles\Dockerfile' -t 'dockerfundamentals:latest' '04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub\Nginx-DockerFiles'
-```
-
-### 예시 출력
-```text
-[+] Building 5.6s (7/7) FINISHED                                                                             docker:desktop-linux
- => [internal] load build definition from Dockerfile                                                                         0.0s
- => => transferring dockerfile: 86B                                                                                          0.0s
- => [internal] load metadata for docker.io/library/nginx:latest                                                              0.8s
- => [internal] load .dockerignore                                                                                            0.0s
- => => transferring context: 2B                                                                                              0.0s
- => [internal] load build context                                                                                            0.0s
- => => transferring context: 90B                                                                                             0.0s
- => [1/2] FROM docker.io/library/nginx:latest@sha256:dc53c8f25a10f9109190ed5b59bda2d707a3bde0e45857ce9e1efaa32ff9cbc1        4.1s
- => => resolve docker.io/library/nginx:latest@sha256:dc53c8f25a10f9109190ed5b59bda2d707a3bde0e45857ce9e1efaa32ff9cbc1        0.0s
- => => sha256:66467f8275465bcd2eb0ebdea7449b993fae35d16b8d57566c94aee34908a6ac 1.21kB / 1.21kB                               0.3s
- => => sha256:397cc88dcd41f46e6d20c478796aef73525ea6e30086727d1716a27d0ce4b3d1 954B / 954B                                   0.4s
- => => sha256:5f4a88bd8474bae2745ccd9541b8e83466e9ce661efb345676eed0834dce6494 405B / 405B                                   0.6s
- => => sha256:021db26e13de22f63471bd0c76a601fe3fbf691a9f7fd157bb79f35b1216cdc9 627B / 627B                                   0.6s
- => => sha256:4eb3a9835b30d43f28a1fcd1d85c9503ef59f655bbbe8b050ff0a3bd9a6d56c2 43.97MB / 43.97MB                             1.8s
- => => sha256:f05e870393313d21a5e3e06bbc4c3d934bbe6c73443959ca653f6394895dde87 1.40kB / 1.40kB                               0.2s
- => => sha256:dad67da3f26bce15939543965e09c4059533b025f707aad72ed3d3f3a09c66f8 28.23MB / 28.23MB                             1.5s
- => => extracting sha256:dad67da3f26bce15939543965e09c4059533b025f707aad72ed3d3f3a09c66f8                                    1.1s
- => => extracting sha256:4eb3a9835b30d43f28a1fcd1d85c9503ef59f655bbbe8b050ff0a3bd9a6d56c2                                    0.7s
- => => extracting sha256:021db26e13de22f63471bd0c76a601fe3fbf691a9f7fd157bb79f35b1216cdc9                                    0.0s
- => => extracting sha256:397cc88dcd41f46e6d20c478796aef73525ea6e30086727d1716a27d0ce4b3d1                                    0.0s
- => => extracting sha256:5f4a88bd8474bae2745ccd9541b8e83466e9ce661efb345676eed0834dce6494                                    0.0s
- => => extracting sha256:66467f8275465bcd2eb0ebdea7449b993fae35d16b8d57566c94aee34908a6ac                                    0.0s
- => => extracting sha256:f05e870393313d21a5e3e06bbc4c3d934bbe6c73443959ca653f6394895dde87                                    0.0s
- => [2/2] COPY index.html /usr/share/nginx/html                                                                              0.2s
- => exporting to image                                                                                                       0.2s
- => => exporting layers                                                                                                      0.1s
- => => exporting manifest sha256:f67207e042d43a2c139bf3cbc84b3fdcd7cebd64953b3d7594317d8f032b1e74                            0.0s
- => => exporting config sha256:e0af1d5828e645bfffb92ea5bf808d976252e7f74092235beae8b7dc9a83f917                              0.0s
- => => exporting attestation manifest sha256:9de647b4f14caf82a0cdfea45b23eaf52892c7b036083d3e76bef8121c02b5c5                0.0s
- => => exporting manifest list sha256:8eb2b6eabe726843f54d12427e31ae0d17c8fc12401a7654506b6a06269546c3                       0.0s
- => => naming to docker.io/library/dockerfundamentals:latest                                                                 0.0s
- => => unpacking to docker.io/library/dockerfundamentals:latest                                                              0.0s
-
-View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/tmz3htjmmyp4fmlx4hpob8mtv
- *  터미널이 작업에서 다시 사용됩니다. 닫으려면 아무 키나 누르세요.
-```
-
-## 사전 준비
-- Docker Hub 계정 생성: https://hub.docker.com/
-- 아래 명령에서 **stacksimplify**는 본인의 Docker Hub 계정 아이디로 바꿔 사용합니다.
-
-## 3. 베이스 Nginx 컨테이너 실행
-- 접속: http://localhost
-```bash
-docker run --name app2 -p 80:80 -d dockerfundamentals
-```
-
-### 포트/이름 충돌 예시
-```text
-a0ce7121f6e72a2f3ef52ccbb5f2d25129d3ba99b33ab7cb5588498da2adda8e
-docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint app2 (b4d60879c5a8f93b637b659611c2ca2d5d7f694a3cc9849ca3d9c583bf0d4e6b): Bind for 0.0.0.0:80 failed: port is already allocated
-```
-
-- SpringBoot 컨테이너가 80 포트를 사용 중이라 충돌이 발생할 수 있습니다.
-- Docker Desktop 목록에서 이미 등록되어 있음을 확인합니다.
-
-![alt text](image-2.png)
+저장소 루트에서 `Nginx-DockerFiles` 폴더를 컨텍스트로 지정해 빌드합니다. `<your-docker-hub-id>`는 본인의 Docker Hub 계정 아이디로 바꿉니다.
 
 ```bash
-docker run --name app2 -p 3000:80 -d dockerfundamentals
+cd docker-basics/04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub/Nginx-DockerFiles
+docker build -t <your-docker-hub-id>/mynginx_image1:v1 .
 ```
 
+### 실제 검증된 빌드 출력 (계정: edumgt)
 ```text
-docker: Error response from daemon: Conflict. The container name "/app2" is already in use by container "a0ce7121f6e72a2f3ef52ccbb5f2d25129d3ba99b33ab7cb5588498da2adda8e". You have to remove (or rename) that container to be able to reuse that name.
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 131B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/nginx:latest
+#2 DONE 2.3s
+
+#5 [1/3] FROM docker.io/library/nginx:latest@sha256:8541484afbc9c8a5a8a99b379568ebbc957f658583ec9448fc43104229c03cf8
+#5 DONE 5.2s
+
+#7 [2/3] COPY ./index.html /usr/share/nginx/html
+#7 DONE 0.1s
+
+#8 [3/3] COPY ./app.js /usr/share/nginx/html
+#8 DONE 0.1s
+
+#9 exporting to image
+#9 exporting layers done
+#9 exporting manifest sha256:e13f7601f8a8ac912c2cb16cd929dc697e03f3c404976c1639c333f8f6b86246 0.0s done
+#9 naming to docker.io/edumgt/mynginx_image1:v1 done
 ```
 
-- 동일한 컨테이너 이름 때문에 오류가 발생한 경우, 다른 이름으로 실행합니다.
+## 3. 컨테이너 실행 및 동작 확인
+2번에서 빌드한 이미지를 실행하고, `index.html`과 `app.js`가 정상적으로 서빙되는지 확인합니다.
 
 ```bash
-docker run --name app3 -p 3000:80 -d dockerfundamentals
+docker run --name mynginx1 -p 8080:80 -d <your-docker-hub-id>/mynginx_image1:v1
+curl http://localhost:8080/
+curl http://localhost:8080/app.js
 ```
 
-### 재실행 예시
+### 실제 검증된 출력 (계정: edumgt)
 ```text
-PS C:\edumgt-java-education\docker-fundamentals> docker run --name app3 -p 3000:3000 -d dockerfundamentals
-b303748ea707199048037695107d917a6990cc5c11860b70ccbd16d504812026
+$ docker run --name mynginx1 -p 18081:80 -d edumgt/mynginx_image1:v1
+mynginx1
+91dd22192390c14099f10594d7f4bdd8333108fc94641a33ed63b56cd6b97f21
+
+$ curl -s http://localhost:18081/
+Welcome to Stack Simplify - NGINX-V1 - Custom Image
+
+$ curl -s http://localhost:18081/app.js
+// test
 ```
 
-![alt text](image-3.png)
-![alt text](image-4.png)
+### 포트/이름 충돌 시
+- 80번 포트가 이미 다른 컨테이너(예: SpringBoot 앱)에서 사용 중이면 다음과 같은 에러가 발생합니다.
+```text
+docker: Error response from daemon: Bind for 0.0.0.0:80 failed: port is already allocated
+```
+  → `-p 8080:80` 처럼 호스트 포트를 바꿔서 재시도합니다.
+- 동일한 이름의 컨테이너가 이미 있으면 다음과 같은 에러가 발생합니다.
+```text
+docker: Error response from daemon: Conflict. The container name "/mynginx1" is already in use ...
+```
+  → 기존 컨테이너를 정리(`docker rm -f mynginx1`)하거나 다른 이름을 사용합니다.
 
-## 컨테이너 중지 및 이미지 삭제
+### 컨테이너 정리
 ```bash
 docker ps
-docker stop app2
-docker stop app3
-
-docker rm a0ce7121f6e72a2f3ef52ccbb5f2d25129d3ba99b33ab7cb5588498da2adda8e
-docker rm b303748ea707199048037695107d917a6990cc5c11860b70ccbd16d504812026
+docker stop mynginx1
+docker rm mynginx1
 ```
 
-![alt text](image-5.png)
+## 4. 태그(Tag) 지정
+Docker Hub에 push하려면 `<계정>/<이미지>:<태그>` 형식으로 태그가 지정되어 있어야 합니다. 2번에서 이미 `<your-docker-hub-id>/mynginx_image1:v1`로 빌드했으므로, 배포용 태그를 하나 더 추가합니다.
 
 ```bash
-docker rmi 8eb2b6eabe726843f54d12427e31ae0d17c8fc12401a7654506b6a06269546c3
+docker images
+docker tag <your-docker-hub-id>/mynginx_image1:v1 <your-docker-hub-id>/mynginx_image1:v1-release
 ```
 
-## 빌드 재실행 메모
-- index.html 복사 문제를 피하려면 아래 디렉터리로 이동 후 빌드합니다.
+## 5. Docker Hub에 Push
+```bash
+docker push <your-docker-hub-id>/mynginx_image1:v1-release
+```
+
+### 실제 검증된 push 출력 (계정: edumgt)
+```text
+$ docker push edumgt/mynginx_image1:v1-release
+The push refers to repository [docker.io/edumgt/mynginx_image1]
+c0df8d325117: Pushed
+b8b80b9bc028: Pushed
+13739289aa77: Pushed
+d84ae7b21412: Pushed
+f5de6e85ac74: Pushed
+38552efe2229: Pushed
+b2b44851aebb: Pushed
+5a4222b844e8: Pushed
+26c307b5e35a: Pushed
+3c55dc422a81: Pushed
+v1-release: digest: sha256:31d3965fdc39ef8191837928f31936ecb53effeb81ab226723f195c19a66cc4c size: 856
+```
+
+## 6. Docker Hub에서 확인
+- 로그인 후 업로드된 이미지를 확인합니다.
+- https://hub.docker.com/repositories
+
+로컬 이미지를 지우고 다시 pull 해서 실제로 push가 반영됐는지 검증할 수 있습니다.
 
 ```bash
-cd C:\edumgt-java-education\docker-fundamentals\04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub\Nginx-DockerFiles
-docker build -t my-nginx .
+docker rmi <your-docker-hub-id>/mynginx_image1:v1-release
+docker pull <your-docker-hub-id>/mynginx_image1:v1-release
 ```
 
-- 실행 기록을 확인하려면 `history` 명령을 사용할 수 있습니다.
-
-```bash
-docker run --name app2 -p 8080:80 -d sha256:9b02795cc82cbf635af6325c51c65b1bbc9eefe2926398fd27b19d482557b14b
+### 실제 검증된 pull 출력 (계정: edumgt)
+```text
+$ docker pull edumgt/mynginx_image1:v1-release
+v1-release: Pulling from edumgt/mynginx_image1
+Digest: sha256:31d3965fdc39ef8191837928f31936ecb53effeb81ab226723f195c19a66cc4c
+Status: Downloaded newer image for edumgt/mynginx_image1:v1-release
+docker.io/edumgt/mynginx_image1:v1-release
 ```
 
-![alt text](image-6.png)
-
-## Docker Hub에서 중요한 이미지 가져오기 (예: GitLab)
+## 참고: Docker Hub에서 유명 이미지 가져오기 (예: GitLab)
 - https://hub.docker.com/r/gitlab/gitlab-ce
 
 ![alt text](image-7.png)
@@ -174,37 +207,6 @@ Password: MUYGthXqvJDomV0fGJZ/hYRv1ZySWlUNg5FGBsheJaw=
 
 ![alt text](image-12.png)
 ![alt text](image-13.png)
-
-## 4. 이미지 빌드 및 실행
-```bash
-docker build -t stacksimplify/mynginx_image1:v1 .
-docker run --name mynginx1 -p 80:80 -d stacksimplify/mynginx_image1:v1
-```
-
-- 본인 계정으로 바꿔 실행합니다.
-
-```bash
-docker build -t <your-docker-hub-id>/mynginx_image1:v1 .
-docker run --name mynginx1 -p 80:80 -d <your-docker-hub-id>/mynginx_image1:v1
-```
-
-## 5. 태그 및 Docker Hub에 푸시
-```bash
-docker images
-docker tag stacksimplify/mynginx_image1:v1 stacksimplify/mynginx_image1:v1-release
-docker push stacksimplify/mynginx_image1:v1-release
-```
-
-- 본인 계정으로 바꿔 실행합니다.
-
-```bash
-docker tag <your-docker-hub-id>/mynginx_image1:v1 <your-docker-hub-id>/mynginx_image1:v1-release
-docker push <your-docker-hub-id>/mynginx_image1:v1-release
-```
-
-## 6. Docker Hub에서 확인
-- 로그인 후 업로드된 이미지를 확인합니다.
-- https://hub.docker.com/repositories
 
 ## 참고: AWS ECR로 푸시
 - Docker Hub와 절차는 유사하며, AWS 환경에 맞춰 진행합니다.
