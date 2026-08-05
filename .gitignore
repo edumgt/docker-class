@@ -45,3 +45,6 @@ yarn-error.log*
 # Temporary working notes
 checklist.md
 todo.md
+
+crawled/
+screenshots/
