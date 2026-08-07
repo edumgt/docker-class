@@ -1,8 +1,9 @@
 ## 명령어
 ```bash
+cd docker/tesseract
 docker run --rm --user "$(id -u):$(id -g)" \
-  -v /home/ubuntu/docker-class:/data \
-  -v /home/ubuntu/docker-class/tessdata:/usr/local/share/tessdata \
+  -v "$PWD":/data \
+  -v "$PWD/tessdata":/usr/local/share/tessdata \
   jitesoft/tesseract-ocr:latest \
   /data/1.png /data/output -l kor+eng
 ```
@@ -11,5 +12,5 @@ docker run --rm --user "$(id -u):$(id -g)" \
 
 ## 보는법
 ```bash
-cat /home/ubuntu/docker-class/output.txt
+cat output.txt
 ```

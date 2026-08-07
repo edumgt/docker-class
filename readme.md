@@ -28,6 +28,15 @@
 
 ```
 docker-class/
+├── docker/                                # Docker 실행 예제 및 보조 리소스
+│   ├── docker-compose.yml                 # FastAPI + Nginx Compose 예제
+│   ├── Dockerfile                         # Python/FastAPI 백엔드 이미지
+│   ├── Dockerfile.fe                      # Nginx 프런트엔드 이미지
+│   ├── Dockerfile.crawler                 # Scrapy 크롤링 이미지
+│   ├── Dockerfile.play                    # Playwright 실행 이미지
+│   ├── frontend/                          # 정적 프런트엔드 예제
+│   └── tesseract/                         # OCR 입력 파일·학습 데이터·실행 가이드
+│
 ├── docker-basics/                         # Docker 기초 (01~05장)
 │   ├── 01-Docker-Introduction/            # Docker 개념 소개
 │   ├── 02-Docker-Installation/            # 설치 가이드 (Windows/macOS/Linux)
@@ -232,6 +241,13 @@ docker-class/
 | 03 | Docker Hub 이미지 Pull/Run | [03-Pull-from-DockerHub-and-Run-Docker-Images](./docker-basics/03-Pull-from-DockerHub-and-Run-Docker-Images/README.md) |
 | 04 | 이미지 Build/Run/Push | [04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub](./docker-basics/04-Build-new-Docker-Image-and-Run-and-Push-to-DockerHub/README.md) |
 | 05 | 핵심 Docker 명령어 | [05-Essential-Docker-Commands](./docker-basics/05-Essential-Docker-Commands/README.md) |
+
+### Docker 실행 예제 — `docker/`
+
+| 구성 | 내용 | 이동 |
+|---|---|---|
+| Compose 예제 | FastAPI 백엔드 + Nginx 프런트엔드 | [docker/README.md](./docker/README.md) |
+| OCR 예제 | Tesseract 한국어·영어 OCR | [tesseract/README.md](./docker/tesseract/README.md) |
 
 ### DevSecOps On-Prem 도구 — `devsecops-on-prem/`
 
