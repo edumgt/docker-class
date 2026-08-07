@@ -20,5 +20,6 @@ services:
     networks:
     - shared-net
 networks:
+  # Create first with: docker network create shared-net
   shared-net:
     external: true
