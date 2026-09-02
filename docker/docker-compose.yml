@@ -6,6 +6,13 @@ services:
     container_name: backend
     ports:
     - 8000:8000
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - capture-results:/data
+    environment:
+      RESULTS_VOLUME: capture-results
+      CAPTURE_IMAGE: local/capture-runner:latest
+      OCR_IMAGE: local/ocr-runner:latest
     restart: unless-stopped
     networks:
     - shared-net
@@ -15,11 +22,26 @@ services:
       dockerfile: Dockerfile.fe
     container_name: frontend
     ports:
-    - 8080:80
+    - ${FRONTEND_PORT:-8080}:80
     restart: unless-stopped
     networks:
     - shared-net
+  capture-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.play
+    image: local/capture-runner:latest
+    profiles: [tools]
+  ocr-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.ocr
+    image: local/ocr-runner:latest
+    profiles: [tools]
 networks:
   # Create first with: docker network create shared-net
   shared-net:
     external: true
+volumes:
+  capture-results:
+    name: capture-results

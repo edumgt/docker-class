@@ -1,0 +1,3 @@
+FROM jitesoft/tesseract-ocr:latest
+
+COPY tesseract/tessdata /usr/local/share/tessdata

@@ -1,3 +1,48 @@
-<html>
-  test 1111 222 333
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>사이트 캡처 OCR</title>
+    <style>
+      body { max-width: 1100px; margin: 40px auto; padding: 0 20px; font-family: system-ui, sans-serif; color: #172033; }
+      form { display: flex; gap: 10px; } input { flex: 1; padding: 12px; font-size: 16px; } button { padding: 12px 18px; }
+      #status { min-height: 24px; margin: 16px 0; } .result { display: grid; gap: 20px; grid-template-columns: 1fr 1fr; }
+      img { width: 100%; border: 1px solid #d5dbe7; } pre { white-space: pre-wrap; max-height: 520px; overflow: auto; padding: 14px; background: #f5f7fb; }
+      @media (max-width: 700px) { .result { grid-template-columns: 1fr; } form { flex-direction: column; } }
+    </style>
+  </head>
+  <body>
+    <h1>사이트 캡처 · OCR</h1>
+    <form id="capture-form">
+      <input id="url" type="url" value="https://www.butler.works/ko/insight" required />
+      <button>캡처 및 OCR</button>
+    </form>
+    <p id="status"></p>
+    <section id="result" class="result" hidden>
+      <div><h2>스크린샷</h2><img id="screenshot" alt="캡처 결과" /></div>
+      <div><h2>OCR 텍스트</h2><pre id="ocr"></pre><h2>렌더링 텍스트</h2><pre id="rendered"></pre></div>
+    </section>
+    <script>
+      const form = document.querySelector('#capture-form');
+      const status = document.querySelector('#status');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.textContent = 'Playwright 캡처와 Tesseract OCR을 실행 중입니다…';
+        form.querySelector('button').disabled = true;
+        document.querySelector('#result').hidden = true;
+        try {
+          const response = await fetch('/api/capture', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: document.querySelector('#url').value }) });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.detail || '요청에 실패했습니다.');
+          document.querySelector('#screenshot').src = data.screenshot_url;
+          document.querySelector('#ocr').textContent = data.ocr_text;
+          document.querySelector('#rendered').textContent = data.rendered_text;
+          document.querySelector('#result').hidden = false;
+          status.textContent = `완료: ${data.job_id}`;
+        } catch (error) { status.textContent = `오류: ${error.message}`; }
+        finally { form.querySelector('button').disabled = false; }
+      });
+    </script>
+  </body>
 </html>

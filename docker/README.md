@@ -20,10 +20,29 @@
 ```bash
 cd docker
 docker network create shared-net 2>/dev/null || true
-docker compose up --build
+docker compose build backend frontend capture-runner ocr-runner
+docker compose up backend frontend
 ```
 
 서비스는 백엔드 `http://localhost:8000`, 프런트엔드 `http://localhost:8080`에서 확인할 수 있습니다.
+
+## 웹 캡처 · OCR 앱
+
+프런트엔드에서 URL을 제출하면 백엔드가 다음 두 컨테이너를 순서대로 실행합니다.
+
+1. `local/capture-runner:latest` — Playwright로 스크린샷과 렌더링 텍스트 생성
+2. `local/ocr-runner:latest` — Tesseract(`kor+eng`)로 스크린샷 OCR
+
+초기 실행에서는 도구 이미지까지 빌드한 후 API와 프런트엔드를 시작합니다.
+
+```bash
+cd docker
+docker network create shared-net 2>/dev/null || true
+docker compose build backend frontend capture-runner ocr-runner
+docker compose up backend frontend
+```
+
+브라우저에서 `http://localhost:8080`을 열어 URL을 입력합니다. 이미 사용 중인 경우 `FRONTEND_PORT=8081 docker compose up frontend`처럼 포트를 바꿀 수 있습니다. 결과는 `capture-results` Docker 볼륨에 작업 ID별로 보관되며, 백엔드의 `/results/<job-id>/` 경로로 제공됩니다.
 
 ## Tesseract OCR 예제
 

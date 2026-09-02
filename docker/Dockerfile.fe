@@ -4,6 +4,7 @@ FROM nginx:stable-alpine
 # 정적 파일(HTML/CSS/JS)을 nginx 기본 서빙 경로에 복사
 # 실제 FE 소스 폴더 이름에 맞게 ./frontend 경로를 수정하세요
 COPY ./frontend /usr/share/nginx/html
+COPY ./frontend/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
