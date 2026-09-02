@@ -184,7 +184,7 @@ docker run --detach \
   --name gitlab \
   --restart always \
   --volume $PWD/gitlab/config:/etc/gitlab \
-  --volume $PWD/gitlab/logs:/var/log/gitlab 6024d9f2a8d5
+  --volume $PWD/gitlab/logs:/var/log/gitlab f63df4c43029
 ```
 
 - 컨테이너 실행에는 5분 이상 걸릴 수 있습니다.
@@ -197,9 +197,11 @@ docker run --detach \
 docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
 ```
 
+
+
 ```text
 PS C:\edumgt-java-education\docker-fundamentals> docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
-Password: MUYGthXqvJDomV0fGJZ/hYRv1ZySWlUNg5FGBsheJaw=
+Password: r5qhhvf2x0fmfrj8QdQ7d5srae9zUSvbrZ+A/m6W0+g=
 ```
 
 - root 계정으로 위 비밀번호로 로그인합니다.
