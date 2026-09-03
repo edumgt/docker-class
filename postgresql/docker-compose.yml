@@ -1,0 +1,24 @@
+services:
+  pg-stock:
+    image: postgres:latest
+    container_name: pg-stock
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin1234}
+      POSTGRES_DB: ${POSTGRES_DB:-admin}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      # postgres:18+ images store data under a major-version subdirectory,
+      # so mount the parent /var/lib/postgresql (NOT .../data) directly.
+      - pg_stock_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-admin}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pg_stock_data:
+    name: pg_stock_data

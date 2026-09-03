@@ -37,6 +37,13 @@ docker-class/
 │   ├── frontend/                          # 정적 프런트엔드 예제
 │   └── tesseract/                         # OCR 입력 파일·학습 데이터·실행 가이드
 │
+├── postgresql/                            # 종목 OHLCV 저장용 PostgreSQL (pg-stock)
+│   ├── docker-compose.yml                 # postgres:latest 기동 (포트 5433, 볼륨 영속화)
+│   ├── schema.sql                         # tickers + ohlcv 스키마
+│   └── README.md                          # 클라이언트(psql/psycopg2/GUI) 설치 및 접속 가이드
+│
+├── scripts/                                # data-1~3 수집·동기화·DB 적재 배치 스크립트 (cron)
+│
 ├── docker-basics/                         # Docker 기초 (01~05장)
 │   ├── 01-Docker-Introduction/            # Docker 개념 소개
 │   ├── 02-Docker-Installation/            # 설치 가이드 (Windows/macOS/Linux)
