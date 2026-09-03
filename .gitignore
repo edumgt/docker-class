@@ -2,6 +2,10 @@
 
 gitlab/
 
+data-1/
+data-2/
+data-3/
+
 # Python
 __pycache__/
 *.py[cod]
