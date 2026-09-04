@@ -1,5 +1,5 @@
 #!/bin/bash
-# Runs one batch of the KOSPI/KOSDAQ 2025 OHLCV gathering job.
+# Runs one batch of the KOSPI/KOSDAQ multi-year OHLCV gathering job.
 # Invoked once a minute by cron; fetch_ohlcv.py tracks progress itself so
 # concurrent/duplicate runs are avoided with a lock instead of relying on
 # cron timing alone.

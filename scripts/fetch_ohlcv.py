@@ -1,12 +1,14 @@
 """
-Gather 2025 (2025-01-01 ~ 2025-12-31) OHLCV data for every KOSPI/KOSDAQ-listed
-ticker into data-1/, one CSV per ticker, via yfinance.
+Gather full-year (Jan 1 ~ Dec 31) OHLCV data for every KOSPI/KOSDAQ-listed
+ticker into data-1/, one CSV per ticker per year, via yfinance.
 
 Meant to be invoked repeatedly (e.g. once a minute by cron through
 fetch_ohlcv_batch.sh). Each run processes a small batch of not-yet-fetched
-tickers and remembers where it left off in state/ohlcv_cursor.json, so the
-full ticker universe is covered gradually instead of hammering Yahoo Finance
-all at once. Tickers that already have a CSV in data-1 are skipped.
+tickers for the first not-yet-complete year in YEARS and remembers where it
+left off in state/ohlcv_cursor_<year>.json, so the full ticker universe is
+covered gradually instead of hammering Yahoo Finance all at once. Once a
+year's tickers are all fetched, the next run moves on to the following year.
+Tickers that already have a CSV in data-1 are skipped.
 """
 import json
 import os
@@ -15,10 +17,10 @@ import FinanceDataReader as fdr
 import yfinance as yf
 
 DATA_DIR = "/home/ubuntu/docker-class/data-1"
-STATE_FILE = "/home/ubuntu/docker-class/scripts/state/ohlcv_cursor.json"
+STATE_DIR = "/home/ubuntu/docker-class/scripts/state"
 BATCH_SIZE = 50
-START_DATE = "2025-01-01"
-END_DATE = "2026-01-01"  # yfinance end date is exclusive
+# 2025 first (already in progress), then the rest in chronological order.
+YEARS = ["2025", "2020", "2021", "2022", "2023", "2024"]
 
 
 def load_ticker_list():
@@ -33,52 +35,57 @@ def load_ticker_list():
     return tickers
 
 
-def load_cursor(total):
-    if os.path.exists(STATE_FILE):
-        with open(STATE_FILE) as f:
+def state_file(year):
+    return os.path.join(STATE_DIR, f"ohlcv_cursor_{year}.json")
+
+
+def load_cursor(year, total):
+    path = state_file(year)
+    if os.path.exists(path):
+        with open(path) as f:
             state = json.load(f)
         if state.get("total") == total:
             return state.get("cursor", 0)
     return 0
 
 
-def save_cursor(cursor, total):
-    os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
-    with open(STATE_FILE, "w") as f:
+def save_cursor(year, cursor, total):
+    os.makedirs(STATE_DIR, exist_ok=True)
+    with open(state_file(year), "w") as f:
         json.dump({"cursor": cursor, "total": total}, f)
 
 
-def out_path(code):
-    return os.path.join(DATA_DIR, f"{code}_2025_ohlcv.csv")
+def out_path(code, year):
+    return os.path.join(DATA_DIR, f"{code}_{year}_ohlcv.csv")
 
 
-def already_fetched(code):
-    path = out_path(code)
+def already_fetched(code, year):
+    path = out_path(code, year)
     return os.path.exists(path) and os.path.getsize(path) > 0
 
 
-def pick_batch(tickers):
+def pick_batch(tickers, year):
     total = len(tickers)
-    cursor = load_cursor(total)
+    cursor = load_cursor(year, total)
     idx = cursor
     scanned = 0
     batch = []
     while len(batch) < BATCH_SIZE and scanned < total:
         code, symbol = tickers[idx]
-        if not already_fetched(code):
+        if not already_fetched(code, year):
             batch.append((code, symbol))
         idx = (idx + 1) % total
         scanned += 1
-    save_cursor(idx, total)
+    save_cursor(year, idx, total)
     return batch
 
 
-def fetch_and_save(batch):
+def fetch_and_save(batch, year):
     symbols = [s for _, s in batch]
     data = yf.download(
         symbols,
-        start=START_DATE,
-        end=END_DATE,
+        start=f"{year}-01-01",
+        end=f"{int(year) + 1}-01-01",  # yfinance end date is exclusive
         group_by="ticker",
         auto_adjust=False,
         threads=True,
@@ -93,24 +100,43 @@ def fetch_and_save(batch):
             if df.empty:
                 continue
             df.index.name = "Date"
-            df.to_csv(out_path(code))
+            df.to_csv(out_path(code, year))
             saved += 1
         except Exception as exc:
             print(f"skip {code} ({symbol}): {exc}")
     return saved
 
 
+def pick_year(tickers):
+    """First year in YEARS that still has unfetched tickers, or None."""
+    total = len(tickers)
+    for year in YEARS:
+        cursor = load_cursor(year, total)
+        idx = cursor
+        for _ in range(total):
+            code, _ = tickers[idx]
+            if not already_fetched(code, year):
+                return year
+            idx = (idx + 1) % total
+    return None
+
+
 def main():
     tickers = load_ticker_list()
     total = len(tickers)
-    batch = pick_batch(tickers)
 
-    if not batch:
-        print(f"All {total} tickers already fetched in {DATA_DIR}.")
+    year = pick_year(tickers)
+    if year is None:
+        print(f"All {total} tickers already fetched for years {YEARS} in {DATA_DIR}.")
         return
 
-    saved = fetch_and_save(batch)
-    print(f"Requested {len(batch)} tickers, saved {saved} CSVs. "
+    batch = pick_batch(tickers, year)
+    if not batch:
+        print(f"All {total} tickers already fetched for {year} in {DATA_DIR}.")
+        return
+
+    saved = fetch_and_save(batch, year)
+    print(f"[{year}] Requested {len(batch)} tickers, saved {saved} CSVs. "
           f"({total - len(batch)}/{total} previously done or in this batch)")
 
 
