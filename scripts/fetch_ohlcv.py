@@ -122,6 +122,7 @@ def pick_year(tickers):
 
 
 def main():
+    os.makedirs(DATA_DIR, exist_ok=True)
     tickers = load_ticker_list()
     total = len(tickers)
 
