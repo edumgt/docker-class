@@ -7,8 +7,10 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin1234}
       POSTGRES_DB: ${POSTGRES_DB:-admin}
-    ports:
-      - "${POSTGRES_PORT:-5433}:5432"
+    # stock-coin-trade 백엔드가 postgresql_default 네트워크에서 직접 접속한다.
+    # Docker Desktop의 호스트 포트 전달 오류를 피하고 DB를 외부에 노출하지 않는다.
+    expose:
+      - "5432"
     volumes:
       # postgres:18+ images store data under a major-version subdirectory,
       # so mount the parent /var/lib/postgresql (NOT .../data) directly.

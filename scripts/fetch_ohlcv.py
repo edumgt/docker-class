@@ -18,6 +18,7 @@ import yfinance as yf
 
 DATA_DIR = "/home/ubuntu/docker-class/data-1"
 STATE_DIR = "/home/ubuntu/docker-class/scripts/state"
+METADATA_FILE = os.path.join(DATA_DIR, "ticker_metadata.csv")
 BATCH_SIZE = 50
 # 2025 first (already in progress), then the rest in chronological order.
 YEARS = ["2025", "2020", "2021", "2022", "2023", "2024"]
@@ -28,11 +29,23 @@ def load_ticker_list():
     krx = krx[krx["Market"].isin(["KOSPI", "KOSDAQ", "KOSDAQ GLOBAL"])]
     tickers = []
     for _, row in krx.iterrows():
-        code = str(row["Code"])
+        code = str(row["Code"]).strip()
+        if code.isdigit():
+            code = code.zfill(6)
         suffix = ".KS" if row["Market"] == "KOSPI" else ".KQ"
-        tickers.append((code, code + suffix))
+        tickers.append((code, code + suffix, str(row.get("Name", "")).strip(), str(row["Market"]).strip()))
     tickers.sort(key=lambda t: t[0])
     return tickers
+
+
+def save_ticker_metadata(tickers):
+    """Keep the current KRX universe snapshot beside the OHLCV CSV files."""
+    import pandas as pd
+
+    os.makedirs(DATA_DIR, exist_ok=True)
+    pd.DataFrame(tickers, columns=["ticker_code", "yahoo_symbol", "name", "market"]).to_csv(
+        METADATA_FILE, index=False
+    )
 
 
 def state_file(year):
@@ -71,7 +84,7 @@ def pick_batch(tickers, year):
     scanned = 0
     batch = []
     while len(batch) < BATCH_SIZE and scanned < total:
-        code, symbol = tickers[idx]
+        code, symbol, _, _ = tickers[idx]
         if not already_fetched(code, year):
             batch.append((code, symbol))
         idx = (idx + 1) % total
@@ -114,7 +127,7 @@ def pick_year(tickers):
         cursor = load_cursor(year, total)
         idx = cursor
         for _ in range(total):
-            code, _ = tickers[idx]
+            code, _, _, _ = tickers[idx]
             if not already_fetched(code, year):
                 return year
             idx = (idx + 1) % total
@@ -124,6 +137,7 @@ def pick_year(tickers):
 def main():
     os.makedirs(DATA_DIR, exist_ok=True)
     tickers = load_ticker_list()
+    save_ticker_metadata(tickers)
     total = len(tickers)
 
     year = pick_year(tickers)

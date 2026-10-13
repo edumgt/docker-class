@@ -21,3 +21,14 @@ CREATE TABLE IF NOT EXISTS ohlcv (
 );
 
 CREATE INDEX IF NOT EXISTS idx_ohlcv_trade_date ON ohlcv (trade_date);
+
+-- Rows rejected by the batch quality checks are retained as audit metadata,
+-- never silently mixed into the backtesting price series.
+CREATE TABLE IF NOT EXISTS ohlcv_data_quality_issues (
+    ticker_code   VARCHAR(20) NOT NULL,
+    trade_date    DATE NOT NULL,
+    reason        TEXT NOT NULL,
+    source_file   TEXT NOT NULL,
+    detected_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (ticker_code, trade_date, reason)
+);
