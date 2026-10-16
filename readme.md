@@ -21,6 +21,7 @@
 - [13. Vector DB 원리와 Docker 실습](#13-vector-db-원리와-docker-실습)
 - [14. 멀티 모델 & sLLM Docker 서빙](#14-멀티-모델--sllm-docker-서빙)
 - [15. Windows WSL·Docker·AI 개발 환경](#15-windows-wsldockerai-개발-환경)
+- [16. Ollama·RAG 컨테이너 시각적 모니터링](#16-ollamarag-컨테이너-시각적-모니터링)
 
 ---
 
@@ -712,6 +713,73 @@ cd ../04-rag-stack && docker compose up -d
 Windows 학습자는 먼저 [WSL 개발 환경 구축 가이드](./docker-basics/02-Docker-Installation/WSL-Setup.md)로 WSL 2, Ubuntu, VS Code Remote WSL, Docker Desktop 연동을 완료합니다. 저장소는 `/mnt/c/...`보다 WSL 홈의 `~/workspace`에 두는 것을 권장합니다.
 
 AI 응용을 개발할 때는 [AI 응용 개발 컨테이너](./ai-tools/05-ai-dev-container/README.md)를 사용합니다. FastAPI, JupyterLab, LangChain/LangGraph/LlamaIndex, Ollama, Qdrant/Chroma/pgvector 클라이언트, 테스트·정적 분석 도구가 포함되어 있으며, 기존 Ollama·Qdrant RAG 스택과 `shared-net`에서 연결됩니다.
+
+---
+
+## 16. Ollama·RAG 컨테이너 시각적 모니터링
+
+KMS RAG 시스템에서 Ollama 컨테이너의 리소스 사용량과 로그를 확인하고, 모델 응답 및 RAG 작업 흐름을 점검하는 방법입니다.
+
+### 1. 터미널 실시간 모니터링
+
+컨테이너의 CPU·메모리 등 리소스 사용량은 `docker stats`로 실시간 확인할 수 있습니다.
+
+```powershell
+docker stats kms-rag-ollama-1
+```
+
+최근 로그 100줄을 확인한 뒤 새 로그를 계속 스트리밍하려면 다음 명령을 사용합니다.
+
+```powershell
+docker logs -f --tail 100 kms-rag-ollama-1
+```
+
+Ollama 로그에는 요청이나 작업 처리 정보가 표시될 수 있습니다. 다만 표시되는 로그 필드와 상세 수준은 Ollama 버전 및 설정에 따라 다릅니다.
+
+### 2. Dozzle (웹 기반 Docker 로그 뷰어)
+
+Docker Desktop 또는 Linux Docker에서 Docker 소켓을 마운트해 Dozzle을 실행합니다.
+
+```powershell
+docker run -d --name dozzle --restart unless-stopped -p 8888:8080 -v /var/run/docker.sock:/var/run/docker.sock amir20/dozzle:latest
+```
+
+브라우저에서 [http://localhost:8888](http://localhost:8888)에 접속하면 컨테이너 로그를 스트리밍하고 검색할 수 있습니다. CPU·메모리 같은 리소스 수치는 `docker stats`를 사용하고, 대시보드가 필요하면 전용 메트릭 스택을 구성하세요.
+
+### 3. Open WebUI (Ollama 채팅·테스트 UI)
+
+Docker 호스트에서 실행 중인 Ollama에 연결해 모델을 대화형으로 테스트하려면 Open WebUI를 실행합니다.
+
+```powershell
+docker run -d --name open-webui --restart always -p 3000:8080 --add-host=host.docker.internal:host-gateway -e OLLAMA_BASE_URL=http://host.docker.internal:11434 -v open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
+```
+
+브라우저에서 [http://localhost:3000](http://localhost:3000)에 접속해 모델을 테스트하고 설정 및 응답 동작을 확인할 수 있습니다. 초당 토큰 수 등 제공되는 통계는 Open WebUI·Ollama 버전과 설정에 따라 달라질 수 있습니다. Ollama가 Docker 호스트가 아닌 Compose 네트워크에 있다면 `OLLAMA_BASE_URL`을 해당 네트워크에서 접근 가능한 Ollama 서비스 URL로 변경하세요.
+
+### 4. RAG 백엔드·워커 로그 확인
+
+Ollama 요청의 실제 문서·질문 맥락을 확인하려면 Ollama를 호출하는 애플리케이션 컨테이너의 로그를 살펴보세요. 먼저 실행 중인 컨테이너를 확인합니다.
+
+```powershell
+docker ps
+```
+
+RAG 백엔드 또는 워커의 실제 컨테이너 이름으로 아래 명령의 플레이스홀더를 바꿔 로그를 스트리밍합니다.
+
+```powershell
+docker logs -f --tail 100 <rag-backend-or-worker-container>
+```
+
+프롬프트나 문서 내용을 로그로 남기면 민감한 정보가 노출될 수 있습니다. 운영 환경에서는 원본 프롬프트, 검색된 청크, 자격 증명 및 개인정보를 마스킹하거나 저장하지 않도록 하세요.
+
+### 운영 목적별 권장 도구
+
+| 목적 | 권장 도구 |
+| --- | --- |
+| 실시간 리소스 사용량 확인 | `docker stats` |
+| 로그 확인 | Dozzle / `docker logs` |
+| 채팅·모델 테스트 | Open WebUI |
+| 실제 RAG 작업 맥락 확인 | 백엔드·워커 로그 |
 
 ---
 
