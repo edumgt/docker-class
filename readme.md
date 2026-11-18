@@ -1,6 +1,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
 # <i class="fa-brands fa-docker"></i> Docker Class Master 2
+
+> 이 실습 자료가 도움이 되셨다면 우측 상단의 ⭐ Star를 눌러주세요. 더 많은 학습자가 자료를 찾는 데 큰 도움이 됩니다.
   
 ## 선수 repo - https://github.com/edumgt/edumgt-lab-init
 
